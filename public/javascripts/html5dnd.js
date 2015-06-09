@@ -19,6 +19,7 @@ Element.prototype.removeClassName = function(name) {
 document.addEventListener("DOMContentLoaded", function(event) { 
     var id_ = 'cards';
     var cards_ = document.querySelectorAll('#' + id_ + ' .card');
+    var sortSpace_ = document.querySelector('#sorting-space');
     var dragSrcEl_ = null;
 
     function handleDragStart(e) {
@@ -36,9 +37,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         if (e.preventDefault) {
             e.preventDefault(); // Necessary. Allows us to drop.
         }
-
-        e.dataTransfer.dropEffect = 'move';  // See the section on the DataTransfer object.
-
+        e.dataTransfer.dropEffect = 'move';
         return false;
     }
 
@@ -59,17 +58,23 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Don't do anything if we're dropping on the same card we're dragging.
         if (dragSrcEl_ != this) {
-            dragSrcEl_.innerHTML = this.innerHTML;
-            this.innerHTML = e.dataTransfer.getData('text/html');
+            // Check if cards are being dropped in sorting space
+            if (sortSpace_ == this){
+                sortSpace_.appendChild(dragSrcEl_);
+            // Otherwise shuffle as usual
+            } else {
+                dragSrcEl_.innerHTML = this.innerHTML;
+                this.innerHTML = e.dataTransfer.getData('text/html');
+            }
 
             // Set number of times the card has been moved.
             var count = this.querySelector('.count');
-            console.log("count defined: " + count);
+
             // var newCount = parseInt(count.getAttribute('data-card-moves')) + 1;
             var dataCardMoves = parseInt(count.getAttribute('data-card-moves')) || 0;
             var newCount = dataCardMoves + 1;
             count.setAttribute('data-card-moves', newCount);
-            count.textContent = 'moves: ' + newCount;
+            count.textContent = 'moves: ' + newCount;  
         }
 
         return false;
@@ -81,8 +86,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             card.removeClassName('over');
             card.removeClassName('moving');
         });
-    }
 
+        // sortSpace_.removeClassName('over');
+    }
 
     var cards = document.querySelectorAll('#cards .card');
     [].forEach.call(cards, function(card) {
@@ -93,4 +99,22 @@ document.addEventListener("DOMContentLoaded", function(event) {
       card.addEventListener('drop', handleDrop, false);
       card.addEventListener('dragend', handleDragEnd, false);
     });
+
+    var cardsBeingSorted = document.querySelectorAll('#sorting-space .card');
+    [].forEach.call(cardsBeingSorted, function(card) {
+      card.addEventListener('dragstart', handleDragStart, false);
+      card.addEventListener('dragenter', handleDragEnter, false);
+      card.addEventListener('dragover', handleDragOver, false);
+      card.addEventListener('dragleave', handleDragLeave, false);
+      card.addEventListener('drop', handleDrop, false);
+      card.addEventListener('dragend', handleDragEnd, false);
+    });
+
+    sortSpace_.addEventListener('dragstart', handleDragStart, false);
+    sortSpace_.addEventListener('dragenter', handleDragEnter, false);
+    sortSpace_.addEventListener('dragover', handleDragOver, false);
+    sortSpace_.addEventListener('dragleave', handleDragLeave, false);
+    sortSpace_.addEventListener('drop', handleDrop, false);
+    sortSpace_.addEventListener('dragend', handleDragEnd, false);
+
 });

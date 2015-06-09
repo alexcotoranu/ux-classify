@@ -31,7 +31,7 @@ router.route('/')
                       //HTML response will render the index.jade file in the views/cards folder. We are also setting "cards" to be an accessible variable in our jade view
                     html: function(){
                         res.render('cards/index', {
-                              title: 'UX Card Deck',
+                              title: 'UX-Classify',
                               "cards" : cards
                         });
                     },
