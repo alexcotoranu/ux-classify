@@ -9,7 +9,7 @@ User Experience (UX) Card Sorting App
 
 3. Open terminal/command prompt/bash in the folder that you chose above or navigate to that folder and enter:
 
-$ npm install
+> npm install
 
 4. Download + install MongoDB for your operating system from the MongoDB website: https://www.mongodb.org/
 
@@ -22,11 +22,11 @@ If you don't have it, you might need to install Hotfix KB2731284 before you can 
 
 6. Open another terminal/command prompt/bash and enter:
 
-$ mongod
+> mongod
 
 7. Open another terminal/command prompt/bash and enter:
 
-$ mongo
+> mongo
 
 8. Enter the following command into mongo:
 
