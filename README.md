@@ -3,23 +3,22 @@ User Experience (UX) Card Sorting App
 
 # setup
 
-1. Clone the ux-classify repository to a folder of your choice.
+1 Clone the ux-classify repository to a folder of your choice.
 
-2. Download + install Node.js for your operating system from: https://nodejs.org/
+2 Download + install Node.js for your operating system from: https://nodejs.org/
 
-3. Open terminal/command prompt/bash in the folder that you chose above or navigate to that folder and enter: > npm install
+3 Open terminal/command prompt/bash in the folder that you chose above or navigate to that folder and enter: 
+> npm install
 
 4. Download + install MongoDB for your operating system from the MongoDB website: https://www.mongodb.org/
 In windows you might need to add it to your path (default: "C:\Program Files\MongoDB\Server\3.0\bin\")
 If you don't have it, you might need to install Hotfix KB2731284 before you can use MongoDB.
 
-5. Create a data folder at the default location that MongoDB expects: "C:\Data\db\"
+5 Create a data folder at the default location that MongoDB expects: "C:\Data\db\"
 
-6. Open another terminal/command prompt/bash and enter: > mongod
+6 Start MongoDB by opening another terminal/command prompt/bash and entering: 
 
-7. Open another terminal/command prompt/bash and enter: > mongo
-
-8. Enter the following command into mongo: > use uxclassifydb
+> mongod
 
 
 # usage
