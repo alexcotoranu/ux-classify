@@ -1,0 +1,16 @@
+extends ../layout
+
+block content
+    h1.
+        #{title}
+    form#formAddCard(name="addcard",method="post",action="/cards")
+        p Name: 
+            input#inputName(type="text", placeholder="ex. Navigation", name="name")
+        p Badge:
+            input#inputBadge(type="number", placeholder="ex. 123456", name="badge")
+        p DOB: 
+            input#inputDob(type="date", name="dob")
+        p Favourite?: 
+            input#inputIsLoved(type="checkbox", name="isloved")
+        p
+            button#btnSubmit(type="submit") submit

@@ -1,0 +1,24 @@
+extends ../layout
+
+block script
+    script(type="text/javascript" src="../javascripts/html5dnd.js")
+        
+block content
+    h1 #{title}
+
+    div#cards
+
+        -each card, i in cards
+            div.card(draggable="true")
+                header #{card.badge}
+                div.content #{card.name}
+                    div.count
+                footer
+                    div.option
+                        form(action='/cards/#{card._id}/edit',method='post',enctype='application/x-wwww-form-urlencoded')
+                            input(type='hidden',value='DELETE',name='_method')
+                            button(type='submit') Delete
+                    div.option 
+                        a(href='/cards/#{card._id}/edit') Edit
+                    div.option
+                        a(href='/cards/#{card._id}') Show
