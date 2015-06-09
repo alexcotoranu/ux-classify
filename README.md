@@ -10,7 +10,7 @@ User Experience (UX) Card Sorting App
 3 Open terminal/command prompt/bash in the folder that you chose above or navigate to that folder and enter: 
 > npm install
 
-4. Download + install MongoDB for your operating system from the MongoDB website: https://www.mongodb.org/
+4 Download + install MongoDB for your operating system from the MongoDB website: https://www.mongodb.org/
 In windows you might need to add it to your path (default: "C:\Program Files\MongoDB\Server\3.0\bin\")
 If you don't have it, you might need to install Hotfix KB2731284 before you can use MongoDB.
 
