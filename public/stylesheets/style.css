@@ -1,9 +1,10 @@
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-  padding: 0px;
-  margin:0px;
   display:flex;
   flex-direction:column;
+  background-color:#E7E7E7;
+  padding: 0px;
+  margin:40px 0px 0px 0px;
 }
 
 a {
@@ -13,9 +14,9 @@ a {
 
 #top-header {
   height:40px;
-  background-color:#60AAC0;
+  background-color:#4086A5;
   width:100%;
-  position: static;
+  position: fixed;
   top:0px;
   left:0px;
   color:#ffffff;
@@ -44,23 +45,46 @@ a {
 
 #sorting-space {
   flex:1;
+  background-color:#515D62;
+  height:calc(100vh - 40px);
+  transition:0.5s all;
+}
+
+#sorting-space.over {
+  background-color:#283237;
 }
 
 
 #right-sidebar {
   width:250px;
   display:block;
-  background-color:#e3e3e3;
+  background-color:#728993;
 }
 
 .card {
-  background-color: #ccc;
+  height:50px;
+  background-color:#fefefe;
+  text-align: center;
+  margin:1px;
+  font-size:16px;
+  line-height: 50px;
+  border-radius: 2px;
+}
+
+.card .header,
+.card .footer,
+.card .count {
+  display:none;
+}
+
+.card-sortable {
+  background-color:#fefefe;
   float: left;
   text-align: center;
   cursor: move;
-  height: 175px;
-  width: 175px;
+  width: 250px;
   border-radius: 2px;
+  border:1px solid #e6e6e6;
   margin: 25px;
   display:flex;
   flex-direction:column;
@@ -70,11 +94,11 @@ a {
   -ms-transition: -ms-transform 0.2s ease-out;
 }
 
-.card.over {
+.card-sortable.over {
   border: 2px dashed #000;
 }
 
-.card.moving {
+.card-sortable.moving {
   opacity: 0.25;
   -webkit-transform: scale(0.8);
   -moz-transform: scale(0.8);
@@ -82,30 +106,47 @@ a {
   -o-transform: scale(0.8);
 }
 
-.card .header {
-  color: #fff;
-  background: #5f5f5f;
+.card-sortable .header {
+  color: #000000;
+  background: #ffffff;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   padding: 5px;
 }
 
-.card .content {
+.card-sortable .content {
   flex:1;
   padding:5px;
   font-size:18px;
+  height:40px;
 }
 
-.card .footer {
-  color: #fff;
-  background: #5f5f5f;
+.card-sortable .footer {
+  color: #000000;
+  background: #ffffff;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   padding: 5px;
   bottom:0px;
 }
 
-.card .footer .option {
+.card-sortable .footer .option {
   display:inline-block;
   padding-right:5px;
+}
+
+.group {
+  background-color:#fefefe;
+  margin:25px;
+  display:inline-block;
+  border-width: 4px 0px 0px 0px;
+  border-style: solid;
+}
+
+.group input {
+  margin-left:25px;
+  margin-top:25px;
+  border:none;
+  height:35px;
+  font-size:25px;
 }

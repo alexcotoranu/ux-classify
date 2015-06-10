@@ -7,14 +7,14 @@ block content
     header#top-header
         h2 #{title}
 
-    div#cards
-         div#space-wrapper
+    div#space-wrapper
 
-            div#sorting-space
+        div#sorting-space.space
 
-            div#right-sidebar
+        div#right-sidebar
+            div#cards
                 -each card, i in cards
-                    div.card(draggable="true")
+                    div.card(id="#{card.badge}" draggable="true")
                         div.header #{card.badge}
                         div.content #{card.name}
                             div.count
