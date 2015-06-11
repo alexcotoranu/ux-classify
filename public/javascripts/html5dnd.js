@@ -12,7 +12,7 @@ Element.prototype.addClassName = function(name) {
 Element.prototype.removeClassName = function(name) {
   if (this.hasClassName(name)) {
     var c = this.className;
-    this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), "");
+    this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), " ");
   }
 };
 
@@ -46,6 +46,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
     var id_ = 'cards';
     var cards_ = document.querySelectorAll('#' + id_ + ' .card');
     var sortSpace_ = document.querySelector('#sorting-space');
+    var deck_ = document.querySelector('#right-sidebar');
     var dragSrcEl_ = null;
 
     function handleDragStart(e) {
@@ -55,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         dragSrcEl_ = this;
         // this/e.target is the source node.
-        this.addClassName('moving');
+        this.addClassName(' moving');;
         
     }
 
@@ -69,11 +70,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
     function handleDragEnter(e) {
         // this / e.target is the current hover target.
-        this.classList.add('over');
+        this.addClassName('over');
     }
 
     function handleDragLeave(e) {
-        this.classList.remove('over');  // this / e.target is previous target element.
+        this.removeClassName('over');  // this / e.target is previous target element.
     }
 
     function handleDrop(e) {
@@ -84,14 +85,16 @@ document.addEventListener("DOMContentLoaded", function(event) {
 
         // Don't do anything if we're dropping on the same card we're dragging.
         if (dragSrcEl_ != this) {
-            
-            if ( sortSpace_ == this && ( hasClass(dragSrcEl_,'card-sortable') == false ) ) {
-                //if cards are being dropped in sorting space
+            //if cards are being dropped in sorting space
+            if ( sortSpace_ == this && ( hasClass(dragSrcEl_,'sortable') == false ) ) {
                 console.log("An unsorted card is being placed in the sorting area");
-                dragSrcEl_.addClassName('-sortable');
+                // then add sortable class to the source
+                dragSrcEl_.addClassName(' sortable');;
+                //move the source into the sorting space
                 sortSpace_.appendChild(dragSrcEl_);
+                //clean up the over class
                 sortSpace_.removeClassName('over');
-            } else if ( hasClass(this,'card-sortable') && hasClass(dragSrcEl_,'card-sortable') ) {
+            } else if ( hasClass(this,'sortable') && hasClass(dragSrcEl_,'sortable') ) {
                 //if a sortable card is being dropped onto another sortable card
                 console.log("Both target and source are sortable");
 
@@ -111,7 +114,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
                             var newGuid = guid();
                             var newColour = randomHexColour();
                             var groupContent = this.parentNode.innerHTML;
-                            this.parentNode.innerHTML = '<div class="group" id="' + newGuid + '" style="border-color:' + newColour + ';"><form><input type="text" name="' + newGuid + '_input" placeholder="Group Name Here..."></input></form>' + groupContent + '</div>';
+
+                            var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
+                            console.log("Odd or even?: " + oddOrEven);
+                            //this.className = this.className ? [this.className, name].join(' ') : name;
+                            this.parentNode.innerHTML = '<div class="group'+ oddOrEven +'" id="' + newGuid + '" style="border-color:' + newColour + ';"><form><input type="text" name="' + newGuid + '_input" placeholder="Group Name Here..."></input></form>' + groupContent + '</div>';
                         } else { // if the source is in another group
                             console.log("However, they are in different groups.");
                             // first clean up extra classes
@@ -152,27 +159,74 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         var newGuid = guid();
                         var newColour = randomHexColour();
                         var groupContent = this.outerHTML + dragSrcEl_.outerHTML;
-                        this.outerHTML = '<div class="group" id="' + newGuid + '"style="border-color:' + newColour + '"><form><input type="text" placeholder="Group Name Here..."></input></form>' + groupContent + '</div>';
+                        var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
+                        console.log("Odd or even?: " + oddOrEven);
+                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><form><input type="text" placeholder="Group Name Here..."></input></form>' + groupContent + '</div>';
                         // then remove the source from the deck or sorting area
                         dragSrcEl_.outerHTML = null;
                     }
                 }
 
-            } else if ( hasClass(this,'card-sortable') && !hasClass(dragSrcEl_,'card-sortable') ) {
-                //do nothing if only the target card is sortable
+            } else if ( hasClass(this,'sortable') && !hasClass(dragSrcEl_,'sortable') ) {
+                //only the target card is sortable
                 console.log("Only target is sortable");
-            } else if ( !hasClass(this,'card-sortable') && hasClass(dragSrcEl_,'card-sortable') ) {
+                // first clean up extra classes
+                dragSrcEl_.removeClassName('moving');
+                this.removeClassName('over');
+                // then add the sortable class name to the source
+                dragSrcEl_.addClassName(' sortable');;
+                // then add it to the target's group
+                var groupContent = this.parentNode.innerHTML + dragSrcEl_.outerHTML;
+                this.parentNode.innerHTML = groupContent;
+                // then remove the source from the sorting area or deck
+                dragSrcEl_.outerHTML=null;
+            } else if ( !hasClass(this,'sortable') && hasClass(dragSrcEl_,'sortable') ) {
                 //if the source card is sortable and the target is not
                 console.log("Only source is sortable");
-                // then add the source to the target (sorting area)
-                sortSpace_.appendChild(dragSrcEl_);
-                // then remove the source from its group
-                //dragSrcEl_.innerHTML=null;
-                dragSrcEl_.removeClassName('moving');
-            } else { // Otherwise switch cards as usual
-                console.log("Swapping cards.");
-                dragSrcEl_.innerHTML = this.innerHTML;
-                this.innerHTML = e.dataTransfer.getData('text/html');
+                // if the target is the sidebar
+                if (this == deck_) {
+                    console.log("The deck is the target");
+                    // first clean up extra classes
+                    dragSrcEl_.removeClassName('moving');
+                    dragSrcEl_.removeClassName('sortable');
+                    this.removeClassName('over');
+                    // // then add card class back
+                    // dragSrcEl_.addClassName('card');
+                    // then add the source to the target (deck)
+                    deck_.appendChild(dragSrcEl_);
+                } else { //if the target is the sorting area
+                    console.log("The deck is not the target");
+                    // first clean up extra classes
+                    dragSrcEl_.removeClassName('moving');
+                    this.removeClassName('over');
+                    // then add the source to the target (sorting area)
+                    sortSpace_.appendChild(dragSrcEl_);
+                }
+                
+                
+            } else {
+                // if the target is the sidebar && the source is not already in the sidebar
+                if ( hasClass(this,'right-sidebar') && dragSrcEl_.parentNode.id !='right-sidebar' ){
+                    console.log('The source is moving into the sidebar from the sorting area.');
+                    // first clean up extra classes
+                    dragSrcEl_.removeClassName('moving');
+                    this.removeClassName('over');
+                    // then add the source to the target (deck)
+                    this.appendChild(dragSrcEl_);
+                } else if (hasClass(this,'group')){
+                    console.log('The target is a group.');
+                    // first clean up extra classes
+                    dragSrcEl_.removeClassName('moving');
+                    this.removeClassName('over');
+                    // then add the sortable class to the source
+                    dragSrcEl_.addClassName('sortable');
+                    // then add the source to the target (group)
+                    this.appendChild(dragSrcEl_);
+                } else {
+                    console.log("Swapping cards.");
+                    dragSrcEl_.innerHTML = this.innerHTML;
+                    this.innerHTML = e.dataTransfer.getData('text/html');
+                }
             }
 
             console.log(this);
@@ -187,9 +241,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // count.textContent = 'moves: ' + newCount;  
         }
 
-        groupEventListener();
-        console.log("run group event listener");
-
+        //refresh event listener
+        console.log("start refreshing event listener");
+        refreshEventListener();
+        
         return false;
     }
 
@@ -203,7 +258,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
         // sortSpace_.removeClassName('over');
     }
 
-    var cards = document.querySelectorAll('#cards .card');
+    var cards = document.querySelectorAll('.card');
     [].forEach.call(cards, function(card) {
       card.addEventListener('dragstart', handleDragStart, false);
       card.addEventListener('dragenter', handleDragEnter, false);
@@ -214,11 +269,11 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
 
 
-    function groupEventListener() {
-        console.log("running group event listener");
-        var groupedCards = document.querySelectorAll('.group .card-sortable');
-        console.log(groupedCards);
-        [].forEach.call(groupedCards, function(card) {
+    function refreshEventListener() {
+        console.log("running event listener refresh");
+        var cards = document.querySelectorAll('.card');
+        console.log(cards);
+        [].forEach.call(cards, function(card) {
           card.addEventListener('dragstart', handleDragStart, false);
           card.addEventListener('dragenter', handleDragEnter, false);
           card.addEventListener('dragover', handleDragOver, false);
@@ -226,6 +281,18 @@ document.addEventListener("DOMContentLoaded", function(event) {
           card.addEventListener('drop', handleDrop, false);
           card.addEventListener('dragend', handleDragEnd, false);
         });
+
+        var groups = document.querySelectorAll('.group');
+        console.log(groups);
+        [].forEach.call(groups, function(group) {
+          // card.addEventListener('dragstart', handleDragStart, false);
+          group.addEventListener('dragenter', handleDragEnter, false);
+          group.addEventListener('dragover', handleDragOver, false);
+          group.addEventListener('dragleave', handleDragLeave, false);
+          group.addEventListener('drop', handleDrop, false);
+          // card.addEventListener('dragend', handleDragEnd, false);
+        });
+        
     }
 
     // var cardsBeingSorted = document.querySelectorAll('#sorting-space .card');
@@ -245,4 +312,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
     sortSpace_.addEventListener('drop', handleDrop, false);
     // sortSpace_.addEventListener('dragend', handleDragEnd, false);
 
+
+    deck_.addEventListener('dragenter', handleDragEnter, false);
+    deck_.addEventListener('dragover', handleDragOver, false);
+    deck_.addEventListener('dragleave', handleDragLeave, false);
+    deck_.addEventListener('drop', handleDrop, false);
 });

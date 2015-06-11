@@ -1,3 +1,5 @@
+html, body { height: 100%; }
+
 body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   display:flex;
@@ -46,7 +48,8 @@ a {
 #sorting-space {
   flex:1;
   background-color:#515D62;
-  height:calc(100vh - 40px);
+  min-height:calc(100vh - 40px);
+  height:100%;
   transition:0.5s all;
 }
 
@@ -61,6 +64,10 @@ a {
   background-color:#728993;
 }
 
+#right-sidebar.over {
+  background-color:#30444D;
+}
+
 .card {
   height:50px;
   background-color:#fefefe;
@@ -69,6 +76,7 @@ a {
   font-size:16px;
   line-height: 50px;
   border-radius: 2px;
+  cursor: move;
 }
 
 .card .header,
@@ -77,12 +85,12 @@ a {
   display:none;
 }
 
-.card-sortable {
+.card.sortable {
   background-color:#fefefe;
   float: left;
   text-align: center;
-  cursor: move;
   width: 250px;
+  /*height:180px;*/
   border-radius: 2px;
   border:1px solid #e6e6e6;
   margin: 25px;
@@ -94,11 +102,11 @@ a {
   -ms-transition: -ms-transform 0.2s ease-out;
 }
 
-.card-sortable.over {
+.card.sortable.over {
   border: 2px dashed #000;
 }
 
-.card-sortable.moving {
+.card.sortable.moving {
   opacity: 0.25;
   -webkit-transform: scale(0.8);
   -moz-transform: scale(0.8);
@@ -106,41 +114,50 @@ a {
   -o-transform: scale(0.8);
 }
 
-.card-sortable .header {
+/*.card.sortable .header {
   color: #000000;
   background: #ffffff;
   border-top-left-radius: 2px;
   border-top-right-radius: 2px;
   padding: 5px;
+  display:block;
 }
 
-.card-sortable .content {
+.card.sortable .content {
   flex:1;
   padding:5px;
   font-size:18px;
   height:40px;
 }
 
-.card-sortable .footer {
+.card.sortable .footer {
   color: #000000;
   background: #ffffff;
   border-bottom-left-radius: 2px;
   border-bottom-right-radius: 2px;
   padding: 5px;
   bottom:0px;
-}
+  display:block;
+}*/
 
-.card-sortable .footer .option {
+.card.sortable .footer .option {
   display:inline-block;
   padding-right:5px;
 }
 
 .group {
-  background-color:#fefefe;
   margin:25px;
   display:inline-block;
   border-width: 4px 0px 0px 0px;
   border-style: solid;
+}
+
+.group.odd {
+  background-color:#fefefe;
+}
+
+.group.even {
+  background-color:#eaeaea;
 }
 
 .group input {
@@ -150,3 +167,18 @@ a {
   height:35px;
   font-size:25px;
 }
+
+.group.odd > form > input {
+  background-color:#fefefe;
+}
+
+.group.even > form > input {
+  background-color:#eaeaea;
+}
+
+.group.over {
+  background-color:#999999;
+  border-width:4px;
+  border-style:dashed;
+}
+
