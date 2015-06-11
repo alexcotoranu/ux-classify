@@ -87,9 +87,10 @@ document.addEventListener("DOMContentLoaded", function(event) {
             
             if ( sortSpace_ == this && ( hasClass(dragSrcEl_,'card-sortable') == false ) ) {
                 //if cards are being dropped in sorting space
+                console.log("An unsorted card is being placed in the sorting area");
                 dragSrcEl_.addClassName('-sortable');
                 sortSpace_.appendChild(dragSrcEl_);
-
+                sortSpace_.removeClassName('over');
             } else if ( hasClass(this,'card-sortable') && hasClass(dragSrcEl_,'card-sortable') ) {
                 //if a sortable card is being dropped onto another sortable card
                 console.log("Both target and source are sortable");
@@ -161,12 +162,13 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 //do nothing if only the target card is sortable
                 console.log("Only target is sortable");
             } else if ( !hasClass(this,'card-sortable') && hasClass(dragSrcEl_,'card-sortable') ) {
-                //if only the source card is sortable
+                //if the source card is sortable and the target is not
                 console.log("Only source is sortable");
                 // then add the source to the target (sorting area)
                 sortSpace_.appendChild(dragSrcEl_);
                 // then remove the source from its group
                 //dragSrcEl_.innerHTML=null;
+                dragSrcEl_.removeClassName('moving');
             } else { // Otherwise switch cards as usual
                 console.log("Swapping cards.");
                 dragSrcEl_.innerHTML = this.innerHTML;
@@ -184,6 +186,9 @@ document.addEventListener("DOMContentLoaded", function(event) {
             // count.setAttribute('data-card-moves', newCount);
             // count.textContent = 'moves: ' + newCount;  
         }
+
+        groupEventListener();
+        console.log("run group event listener");
 
         return false;
     }
@@ -209,6 +214,19 @@ document.addEventListener("DOMContentLoaded", function(event) {
     });
 
 
+    function groupEventListener() {
+        console.log("running group event listener");
+        var groupedCards = document.querySelectorAll('.group .card-sortable');
+        console.log(groupedCards);
+        [].forEach.call(groupedCards, function(card) {
+          card.addEventListener('dragstart', handleDragStart, false);
+          card.addEventListener('dragenter', handleDragEnter, false);
+          card.addEventListener('dragover', handleDragOver, false);
+          card.addEventListener('dragleave', handleDragLeave, false);
+          card.addEventListener('drop', handleDrop, false);
+          card.addEventListener('dragend', handleDragEnd, false);
+        });
+    }
 
     // var cardsBeingSorted = document.querySelectorAll('#sorting-space .card');
     // [].forEach.call(cardsBeingSorted, function(card) {
