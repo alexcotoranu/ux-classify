@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                             var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
                             console.log("Odd or even?: " + oddOrEven);
                             //this.className = this.className ? [this.className, name].join(' ') : name;
-                            this.parentNode.innerHTML = '<div class="group'+ oddOrEven +'" id="' + newGuid + '" style="border-color:' + newColour + ';"><form><input type="text" name="' + newGuid + '_input" placeholder="Group Name Here..."></input></form>' + groupContent + '</div>';
+                            this.parentNode.innerHTML = '<div class="group'+ oddOrEven +'" id="' + newGuid + '" style="border-color:' + newColour + ';"><form><input type="text" name="' + newGuid + '_input" placeholder="Group Name Here..."></input></form><div class="delete-group">X</div>' + groupContent + '</div>';
                         } else { // if the source is in another group
                             console.log("However, they are in different groups.");
                             // first clean up extra classes
@@ -145,11 +145,20 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 } else { // else if target is not in a group
                     console.log("The target is not in a group.");
                     // if the source is in a group
-                    if (hasClass(dragSrcEl_.parentNode,'.group')) {
+                    if (hasClass(dragSrcEl_.parentNode,'group')) {
                         console.log("The source is in a group");
-
+                        // first clean up extra classes
+                        dragSrcEl_.removeClassName('moving');
+                        this.removeClassName('over');
                         // then create a new group and add both the target and source to it
+                        var newGuid = guid();
+                        var newColour = randomHexColour();
+                        var groupContent = this.outerHTML + dragSrcEl_.outerHTML;
+                        var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
+                        console.log("Odd or even?: " + oddOrEven);
+                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><form><input type="text" placeholder="Group Name Here..."></input></form><div class="delete-group">X</div>' + groupContent + '</div>';
                         // then remove the source from it's original group and the target from the deck
+                        dragSrcEl_.outerHTML = null;
                     } else { // if the source is not in a group
                         console.log("The source is not in a group.");
                         // first clean up extra classes
@@ -161,11 +170,12 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         var groupContent = this.outerHTML + dragSrcEl_.outerHTML;
                         var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
                         console.log("Odd or even?: " + oddOrEven);
-                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><form><input type="text" placeholder="Group Name Here..."></input></form>' + groupContent + '</div>';
+                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><form><input type="text" placeholder="Group Name Here..."></input></form><div class="delete-group">X</div>' + groupContent + '</div>';
                         // then remove the source from the deck or sorting area
                         dragSrcEl_.outerHTML = null;
                     }
                 }
+                // TODO: make cleaner group creations by using parentNode.appendChild instead of inner and outer HTML
 
             } else if ( hasClass(this,'sortable') && !hasClass(dragSrcEl_,'sortable') ) {
                 //only the target card is sortable
@@ -185,7 +195,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                 console.log("Only source is sortable");
                 // if the target is the sidebar
                 if (this == deck_) {
-                    console.log("The deck is the target");
+                    console.log("The target is the deck");
                     // first clean up extra classes
                     dragSrcEl_.removeClassName('moving');
                     dragSrcEl_.removeClassName('sortable');
@@ -194,8 +204,17 @@ document.addEventListener("DOMContentLoaded", function(event) {
                     // dragSrcEl_.addClassName('card');
                     // then add the source to the target (deck)
                     deck_.appendChild(dragSrcEl_);
+                } else if ( hasClass(this,'group') ) { // if the target is a group
+                    console.log("The target is a group");
+                    // first clean up extra classes
+                    dragSrcEl_.removeClassName('moving');
+                    this.removeClassName('over');
+                    // then add the sortable class to the source
+                    dragSrcEl_.addClassName('sortable');
+                    // then add the source to the target (group)
+                    this.appendChild(dragSrcEl_);
                 } else { //if the target is the sorting area
-                    console.log("The deck is not the target");
+                    console.log("The target is neither a group nor the deck");
                     // first clean up extra classes
                     dragSrcEl_.removeClassName('moving');
                     this.removeClassName('over');
@@ -293,6 +312,21 @@ document.addEventListener("DOMContentLoaded", function(event) {
           // card.addEventListener('dragend', handleDragEnd, false);
         });
         
+        var deleteGroupButtons = document.querySelectorAll('.delete-group');
+        //for each delete-group button
+        [].forEach.call(deleteGroupButtons, function(button) {
+            //add event listener for deleting the parent on click
+            //button.addEventListener('click', button.parentNode.outerHTML = null, false);
+
+            // //if the parent doesn't have nested groups
+            // if ( !hasClass(button.parentNode.parentNode,'group') ) {
+            //     //add event listener for deleting the parent on click
+            //     button.addEventListener('click', button.parentNode);
+            // } else { //if the parent has nested groups
+               
+                
+            // }
+        });
     }
 
     // var cardsBeingSorted = document.querySelectorAll('#sorting-space .card');
