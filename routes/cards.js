@@ -87,6 +87,45 @@ router.get('/new', function(req, res) {
     res.render('cards/new', { title: 'Add New Card' });
 });
 
+
+
+router.route('/savegroup')
+  .post(function(req, res) {
+    // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
+    var id = req.body.id;
+    var name = req.body.name;
+    var cards = req.body.cards;
+    var groups = req.body.groups;
+    //call the create function for our database
+    mongoose.model('Group').create({
+        name : name,
+        id : id,
+        cards : cards,
+        groups : groups
+    }, function (err, group) {
+          if (err) {
+              res.send("There was a problem adding the information to the database.");
+          } else {
+              //Card has been created
+              console.log('POST saving group');
+              res.format({
+                  //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
+                html: function(){
+                    // If it worked, set the header so the address bar doesn't still say /adduser
+                    // res.location("cards");
+                    // And forward to success page
+                    // res.redirect("/cards");
+                },
+                //JSON response will show the newly created card
+                json: function(){
+                    res.json(card);
+                }
+            });
+          }
+    })
+});
+
+
 // route middleware to validate :id
 router.param('id', function(req, res, next, id) {
     //console.log('validating ' + id + ' exists');
