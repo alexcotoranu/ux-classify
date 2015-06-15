@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                             var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
                             console.log("Odd or even?: " + oddOrEven);
                             //this.className = this.className ? [this.className, name].join(' ') : name;
-                            this.parentNode.innerHTML = '<div class="group'+ oddOrEven +'" id="' + newGuid + '" style="border-color:' + newColour + ';"><form name="groupform" method="post" action="/savegroup"><input type="text" name="groupname" placeholder="Group Name Here..."></input></form><div class="delete-group">X</div>' + groupContent + '</div>';
+                            this.parentNode.innerHTML = '<div class="group'+ oddOrEven +'" id="' + newGuid + '" style="border-color:' + newColour + ';"><input type="text" name="groupname" placeholder="Group Name Here..."></form><div class="delete-group">X</div>' + groupContent + '</div>';
                         } else { // if the source is in another group
                             console.log("However, they are in different groups.");
                             // first clean up extra classes
@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         var groupContent = this.outerHTML + dragSrcEl_.outerHTML;
                         var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
                         console.log(" Odd or even?: " + oddOrEven);
-                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><form name="groupform" method="post" action="/savegroup"><input type="text" name="groupname" placeholder="Group Name Here..."></input></form><div class="delete-group">X</div>' + groupContent + '</div>';
+                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><input type="text" name="groupname" placeholder="Group Name Here..."></input><div class="delete-group">X</div>' + groupContent + '</div>';
                         // then remove the source from it's original group and the target from the deck
                         dragSrcEl_.outerHTML = null;
                     } else { // if the source is not in a group
@@ -170,7 +170,7 @@ document.addEventListener("DOMContentLoaded", function(event) {
                         var groupContent = this.outerHTML + dragSrcEl_.outerHTML;
                         var oddOrEven = hasClass(this.parentNode,'odd') ? 'even': 'odd';
                         console.log("Odd or even?: " + oddOrEven);
-                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><form name="groupform" method="post" action="/savegroup"><input type="text" name="groupname" placeholder="Group Name Here..."></input></form><div class="delete-group">X</div>' + groupContent + '</div>';
+                        this.outerHTML = '<div class="group '+ oddOrEven +'" id="' + newGuid + '"style="border-color:' + newColour + '"><input type="text" name="groupname" placeholder="Group Name Here..."></input><div class="delete-group">X</div>' + groupContent + '</div>';
                         // then remove the source from the deck or sorting area
                         dragSrcEl_.outerHTML = null;
                     }

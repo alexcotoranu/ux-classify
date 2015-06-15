@@ -8,6 +8,7 @@ var methodOverride = require('method-override');
 
 var db = require('./model/db');
 var cards = require('./model/card');
+var groups = require('./model/group');
 
 var routes = require('./routes/index');
 var cards = require('./routes/cards');

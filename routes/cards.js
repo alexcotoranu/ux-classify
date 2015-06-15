@@ -92,16 +92,21 @@ router.get('/new', function(req, res) {
 router.route('/savegroup')
   .post(function(req, res) {
     // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
+    console.log(req.body);
     var id = req.body.id;
+    console.log("Group ID:" + id);
     var name = req.body.name;
+    console.log("Group Name:" + name);
     var cards = req.body.cards;
+    console.log("Cards Array:" + cards);
     var groups = req.body.groups;
+    console.log("Groups Array:" + groups);
     //call the create function for our database
     mongoose.model('Group').create({
         name : name,
         id : id,
-        cards : cards,
-        groups : groups
+        cards : [cards],
+        groups : [groups]
     }, function (err, group) {
           if (err) {
               res.send("There was a problem adding the information to the database.");
