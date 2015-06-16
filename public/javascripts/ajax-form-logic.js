@@ -22,9 +22,11 @@ $(document).ready(function() {
         var data = {
           id: id,
           name: name,
-          cards: cardArray,
-          groups: groupArray
+          cards: JSON.stringify(cardArray),
+          groups: JSON.stringify(groupArray)
         };
+
+        console.log(data);
 
         $.ajax({
           url: '/cards/savegroup',
@@ -34,6 +36,7 @@ $(document).ready(function() {
           {
               //data: return data from server
               console.log(data);
+              console.log("Everything is fine.");
           },
           error: function(jqXHR, textStatus, errorThrown) 
           {
@@ -47,8 +50,8 @@ $(document).ready(function() {
       //parentGroup.on("group:changed", function (){
         console.log("Group has changed.");
         console.log("parentGroupName: " + parentGroupName);
-        var cardsInGroup = new Array();
-        var groupsInGroup = new Array();
+        var cardsInGroup = [];
+        var groupsInGroup = [];
         //select only cards directly inside the group 
         var cardSelector = '#' + parentGroupID +' > .card';
         //console.log(cardSelector);
@@ -64,31 +67,13 @@ $(document).ready(function() {
           console.log(cardsInGroup);
         });
 
-        // $(cardSelector).each(function(i,val){
-        //   var cardID = $(this).attr('id');
-        //   var card = {};
-        //   console.log("Value"+i+": "+cardID);
-        //   card.id = cardID;
-        //   cardsInGroup[i] = card;
-
-        //   //cardsInGroup.id = cardID;
-        //   console.log(cardsInGroup);
-        // });
-
         // for each card in the group
         $(groupSelector).each(function(){
           var groupID = $(this).attr('id');
           // append it to the list of cards like so: groupsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
           groupsInGroup.push({id:groupID});
-          //console.log(groupID);
+          console.log(groupID);
         });
-
-        // $(groupSelector).each(function(i,val){
-        //   var groupID = $(this).attr('id');
-        //   console.log("Value"+i+": "+groupID);
-        //   groupsInGroup.id = groupID;
-        //   console.log(groupsInGroup);
-        // });
 
         saveGroup(parentGroupID,parentGroupName,cardsInGroup,groupsInGroup);
       //});
