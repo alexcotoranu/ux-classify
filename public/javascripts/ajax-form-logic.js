@@ -1,3 +1,188 @@
+
+function saveDeck(name,cardArray,dateCreated){
+  console.log("Deck is being saved");
+  
+  var data = {
+    name: name,
+    cards: JSON.stringify(cardArray),
+    dateCreated: dateCreated
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/decks/save',
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Project was successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+        //if fails
+        console.log(errorThrown);
+    }
+  });
+}
+
+function saveGroup(id,name,cardArray,groupArray){
+  // event.preventDefault(); // Stop the form from causing a page refresh.
+  // event.unbind(); // this is supposed to stop multiple form submissions
+  console.log("Groups are being saved");
+  
+  var data = {
+    id: id,
+    name: name,
+    cards: JSON.stringify(cardArray),
+    groups: JSON.stringify(groupArray)
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/groups/save',
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Groups were successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown) 
+    {
+        //if fails 
+        console.log(errorThrown);     
+    }
+  });
+}
+
+function saveCard(word,example,dateCreated,isCustom){
+  console.log("Cards are being saved");
+  
+  var data = {
+    word: word,
+    example: example,
+    dateCreated: dateCreated,
+    isCustom: isCustom
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/cards/save',
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Project was successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+        //if fails
+        console.log(errorThrown);
+    }
+  });
+}
+
+function saveParticipant(name,dateJoined){
+  console.log("Participant is being saved");
+  
+  var data = {
+    name: name,
+    dateJoined: dateJoined
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/participants/save',
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Participant was successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown) 
+    {
+        //if fails 
+        console.log(errorThrown);
+    }
+  });
+}
+
+function saveSession(experiment,participant,groupArray,dateHeld){
+  console.log("Session is being saved");
+  
+  var data = {
+    experiment: experiment,
+    participant: participant,
+    groups: JSON.stringify(groupArray),
+    dateHeld: dateHeld
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/sessions/save',
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Session was successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown) 
+    {
+        //if fails 
+        console.log(errorThrown);
+    }
+  });
+}
+
+function saveProject(name,dateCreated){
+  console.log("Project is being saved");
+  
+  var data = {
+    name: name,
+    dateCreated: dateCreated
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/projects/save',
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Project was successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown)
+    {
+        //if fails
+        console.log(errorThrown);
+    }
+  });
+}
+
+
 $(document).ready(function() {
 
   $('#save-btn').on("click", function(){
@@ -12,39 +197,6 @@ $(document).ready(function() {
       console.log(inputSelector);
       //group name from user input
       var parentGroupName = $(inputSelector).val();
-
-
-      function saveGroup(id,name,cardArray,groupArray){
-        // event.preventDefault(); // Stop the form from causing a page refresh.
-        // event.unbind(); // this is supposed to stop multiple form submissions
-        console.log("something is being saved");
-        
-        var data = {
-          id: id,
-          name: name,
-          cards: JSON.stringify(cardArray),
-          groups: JSON.stringify(groupArray)
-        };
-
-        console.log(data);
-
-        $.ajax({
-          url: '/cards/savegroup',
-          type: 'POST',
-          data: data,
-          success:function(data, textStatus, jqXHR) 
-          {
-              //data: return data from server
-              console.log(data);
-              console.log("Everything is fine.");
-          },
-          error: function(jqXHR, textStatus, errorThrown) 
-          {
-              //if fails 
-              console.log(errorThrown);     
-          }
-        });
-      }
 
       // custom group changed event listener
       //parentGroup.on("group:changed", function (){
@@ -63,7 +215,7 @@ $(document).ready(function() {
         $(cardSelector).each(function(){
           var cardID = $(this).attr('id');
           // append it to the list of cards like so: cardsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
-          cardsInGroup.push({id:cardID});
+          cardsInGroup.push(cardID);
           console.log(cardsInGroup);
         });
 
@@ -71,7 +223,7 @@ $(document).ready(function() {
         $(groupSelector).each(function(){
           var groupID = $(this).attr('id');
           // append it to the list of cards like so: groupsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
-          groupsInGroup.push({id:groupID});
+          groupsInGroup.push(groupID);
           console.log(groupID);
         });
 

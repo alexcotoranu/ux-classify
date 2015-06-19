@@ -17,9 +17,9 @@ block content
             div#cards
                 -each card, i in cards
                     div.card(id="#{card._id}" draggable="true")
-                        div.header #{card.badge}
-                        div.content #{card.name}
-                            div.count
+                        //- div.header #{card.badge}
+                        div.word #{card.word}
+                        div.example #{card.example}
                         div.footer
                             div.option
                                 form(action='/cards/#{card._id}/edit',method='post',enctype='application/x-wwww-form-urlencoded')

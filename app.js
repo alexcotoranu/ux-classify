@@ -7,11 +7,16 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
 var db = require('./model/db');
-var cards = require('./model/card');
-var groups = require('./model/group');
+// var cards = require('./model/card');
+// var groups = require('./model/group');
 
 var routes = require('./routes/index');
 var cards = require('./routes/cards');
+var groups = require('./routes/groups');
+var participants = require('./routes/participants');
+var sessions = require('./routes/sessions');
+// var experiments = require('./routes/experiments');
+// var projects = require('./routes/projects');
 var users = require('./routes/users');
 
 var app = express();
@@ -30,6 +35,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', routes);
 app.use('/cards', cards);
+app.use('/groups', groups);
+app.use('/participants', participants);
+app.use('/sessions', sessions);
+// app.use('/experiments', experiments);
+// app.use('/projects', projects);
 app.use('/users', users);
 
 // catch 404 and forward to error handler

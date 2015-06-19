@@ -5,7 +5,7 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 
 //copy-pasted from method-override
-router.use(bodyParser.urlencoded({ extended: true }))
+router.use(bodyParser.urlencoded({ extended: true }));
 router.use(methodOverride(function(req, res){
       if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         // look in urlencoded POST bodies and delete it
@@ -13,7 +13,47 @@ router.use(methodOverride(function(req, res){
         delete req.body._method
         return method
       }
-}))
+}));
+
+
+//::::::::::::::::::::::SAVE THE CARD
+router.route('/save')
+  .post(function(req, res) {
+        // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
+        var word = req.body.word;
+        var example = req.body.example;
+        var dateCreated = req.body.dateCreated;
+        var isCustom = req.body.isCustom;
+        //call the create function for our database
+        mongoose.model('Card').create({
+            word : word,
+            example : example,
+            dateCreated : dateCreated,
+            isCustom : isCustom
+        }, function (err, card) {
+              if (err) {
+                  res.send("There was a problem adding the information to the database.");
+              } else {
+                  //Card has been created
+                  console.log('POST creating new card: ' + card);
+                  res.format({
+                      //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
+                    html: function(){
+                        // If it worked, set the header so the address bar doesn't still say /adduser
+                        // res.location("cards");
+                        // And forward to success page
+                        // res.redirect("/cards");
+                    },
+                    //JSON response will show the newly created card
+                    json: function(){
+                        res.json(card);
+                    }
+                });
+              }
+        })
+    });
+
+
 
 //build the REST operations at the base for cards
 //this will be accessible from http://127.0.0.1:3000/cards if the default route for / is left unchanged
@@ -36,9 +76,9 @@ router.route('/')
                         });
                     },
                     //JSON response will show all cards in JSON format
-                    json: function(){
-                        res.json(infophotos);
-                    }
+                    // json: function(){
+                    //     res.json(infophotos);
+                    // }
                 });
               }     
         });
@@ -47,17 +87,16 @@ router.route('/')
     //POST a new card
     .post(function(req, res) {
         // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
-        var name = req.body.name;
-        var badge = req.body.badge;
-        var dob = req.body.dob;
-        var company = req.body.company;
-        var isloved = req.body.isloved;
+        var word = req.body.word;
+        var example = req.body.example;
+        var dateCreated = req.body.dateCreated;
+        var isCustom = req.body.isCustom;
         //call the create function for our database
         mongoose.model('Card').create({
-            name : name,
-            badge : badge,
-            dob : dob,
-            isloved : isloved
+            word : word,
+            example : example,
+            dateCreated : dateCreated,
+            isCustom : isCustom
         }, function (err, card) {
               if (err) {
                   res.send("There was a problem adding the information to the database.");
@@ -85,54 +124,6 @@ router.route('/')
 /* GET New Card page. */
 router.get('/new', function(req, res) {
     res.render('cards/new', { title: 'Add New Card' });
-});
-
-
-
-router.route('/savegroup')
-  .post(function(req, res) {
-    // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
-    console.log(req.body);
-
-    var id = req.body.id;
-    console.log("Group ID:" + id);
-
-    var name = req.body.name;
-    console.log("Group Name:" + name);
-
-    var cards = JSON.parse(req.body.cards);
-    console.log("Cards Array:" + cards);
-
-    var groups = JSON.parse(req.body.groups);
-    console.log("Groups Array:" + groups);
-
-    //call the create function for our database
-    mongoose.model('Group').create({
-        name : name,
-        id : id,
-        cards : cards,
-        groups : groups
-    }, function (err, group) {
-          if (err) {
-              res.send("There was a problem adding the information to the database.");
-          } else {
-              //Card has been created
-              console.log('POST saving group');
-              res.format({
-                  //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
-                html: function(){
-                    // If it worked, set the header so the address bar doesn't still say /adduser
-                    // res.location("cards");
-                    // And forward to success page
-                    // res.redirect("/cards");
-                },
-                //JSON response will show the newly created card
-                json: function(){
-                    res.json(card);
-                }
-            });
-          }
-    })
 });
 
 
@@ -177,12 +168,12 @@ router.route('/:id')
         console.log('GET Error: There was a problem retrieving: ' + err);
       } else {
         console.log('GET Retrieving ID: ' + card._id);
-        var carddob = card.dob.toISOString();
-        carddob = carddob.substring(0, carddob.indexOf('T'))
+        var cardcreated = card.dateCreated.toISOString();
+        cardcreated = cardcreated.substring(0, cardcreated.indexOf('T'))
         res.format({
           html: function(){
               res.render('cards/show', {
-                "carddob" : carddob,
+                "cardcreated" : cardcreated,
                 "card" : card
               });
           },
@@ -207,14 +198,14 @@ router.get('/:id/edit', function(req, res) {
             //Return the card
             console.log('GET Retrieving ID: ' + card._id);
             //format the date properly for the value to show correctly in our edit form
-          var carddob = card.dob.toISOString();
-          carddob = carddob.substring(0, carddob.indexOf('T'))
+          var cardcreated = card.dateCreated.toISOString();
+          cardcreated = cardcreated.substring(0, cardcreated.indexOf('T'))
             res.format({
                 //HTML response will render the 'edit.jade' template
                 html: function(){
                        res.render('cards/edit', {
                           title: 'Card' + card._id,
-                        "carddob" : carddob,
+                          "cardcreated" : cardcreated,
                           "card" : card
                       });
                  },
@@ -233,20 +224,19 @@ router.get('/:id/edit', function(req, res) {
 //PUT to update a card by ID
 router.put('/:id/edit', function(req, res) {
     // Get our REST or form values. These rely on the "name" attributes
-    var name = req.body.name;
-    var badge = req.body.badge;
-    var dob = req.body.dob;
-    var company = req.body.company;
-    var isloved = req.body.isloved;
+    var word = req.body.word;
+    var example = req.body.example;
+    var dateCreated = req.body.dateCreated;
+    var isCustom = req.body.isCustom;
 
    //find the document by ID
         mongoose.model('Card').findById(req.id, function (err, card) {
             //update it
             card.update({
-                name : name,
-                badge : badge,
-                dob : dob,
-                isloved : isloved
+                word : word,
+                example : example,
+                dateCreated : dateCreated,
+                isCustom : isCustom
             }, function (err, cardID) {
               if (err) {
                   res.send("There was a problem updating the information to the database: " + err);

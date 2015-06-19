@@ -5,13 +5,13 @@ block content
         Card ID #{card._id}
     form(action='/cards/#{card._id}/edit',method='post',name='updatecard',enctype='application/x-www-form-urlencoded')
         p Name: 
-            input#inputName(type='text', value='#{card.name}', name='name')
+            input#inputName(type='text', value='#{card.word}', name='word')
         p Badge: 
-            input#inputBadge(type='number', value='#{card.badge}', name='badge')
+            input#inputExample(type='text', value='#{card.example}', name='example')
         p DOB: 
-            input#inputDob(type='date', value='#{carddob}', name='dob')
+            input#inputCreated(type='date', value='#{cardcreated}', name='createdDate')
         p Are you Loved?: 
-            input#inputIsLoved(type='checkbox', name='isloved', checked=('#{card.isloved}'==='true' ? "checked" : undefined))
+            input#inputIsCustom(type='checkbox', name='isCustom', checked=('#{card.isCustom}'==='true' ? "checked" : undefined))
         p 
             input(type='hidden',value='PUT',name='_method')
         p 

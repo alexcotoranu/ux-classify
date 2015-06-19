@@ -70,11 +70,11 @@ a {
 
 .card {
   height:50px;
-  background-color:#fefefe;
+  background-color: #fefefe;
   text-align: center;
-  margin:1px;
-  font-size:16px;
-  line-height: 50px;
+  margin: 1px;
+  font-size: 16px;
+  line-height: 30px;
   border-radius: 2px;
   cursor: move;
 }
@@ -83,6 +83,12 @@ a {
 .card .footer,
 .card .count {
   display:none;
+}
+
+.card .example {
+  color:#A0A0A0;
+  font-size:10px;
+  line-height: 10px;
 }
 
 .card.sortable {
