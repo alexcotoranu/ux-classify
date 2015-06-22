@@ -1,7 +1,32 @@
 
-
 $(document).ready(function() {
-    // save button logic
+
+    //::::::::: PROJECTS
+    // "create new" button logic
+    $('#new-btn.new-project').on("click", function(){
+        // console.log("Create New was clicked");
+        var name = $('input.project-name').val();
+        // console.log(name);
+        saveProject(name);
+    });
+
+    //::::::::: DECKS
+    // "create new" button logic
+    $('#new-btn.new-deck').on("click", function(){
+        // console.log("Create New was clicked");
+        var name = $('input.deck-name').val();
+        // console.log(name);
+        saveDeck(name);
+    });
+
+    $(document).on("click",".deck", function(){
+        var deckId = $(this).attr('id');
+        $('#page-wrapper').load('/decks/'+deckId);
+    });
+
+    //::::::::: CARDS & GROUPS
+
+    // "save" button logic
     $('#save-btn').on("click", function(){
         // console.log("Save was clicked");
         $('.group').each(function() {
@@ -11,7 +36,7 @@ $(document).ready(function() {
     });
 
     // group name change logic
-    $('#sorting-space').on('change','.group-name', function () {
+    $(document).on('change','input.group-name', function () {
         var id = $(this).parent('.group').attr('id');
         saveGroup(id);
     });
@@ -49,13 +74,15 @@ $(document).ready(function(){
     function handleDragEnter(e) {
         // this / e.target is the current hover target.
         $(this).addClass('over');
+        console.log("You are entering: ");
+        console.log($(this));
     }
 
     function handleDragLeave(e) {
          // this / e.target is previous target element.
         $(this).removeClass('over');
-        // console.log("You are leaving: ");
-        // console.log($(this));
+        console.log("You are leaving: ");
+        console.log($(this));
         // console.log(this);
         //console.log(source);
         // console.log(e.target);
@@ -78,7 +105,7 @@ $(document).ready(function(){
         // console.log($(source).attr('id'))
 
         // Don't do anything if target is source.
-        if (source != target) {
+        if (source.attr('id') != target.attr('id')) {
             // console.log(target);
             // console.log(source);
             //if source card is being dropped into the sorting space from the sidebar
@@ -112,7 +139,7 @@ $(document).ready(function(){
                 //if the source card is sortable and the target is not
                 console.log("Only source is sortable");
                 // if the target is the sidebar
-                if (target == deck) {
+                if (target.attr('id') == deck.attr('id')) {
                     console.log("The target is the deck");
                     // first clean up extra classes
                     source.removeClass('moving');
@@ -126,11 +153,20 @@ $(document).ready(function(){
                     source.removeClass('moving');
                     target.removeClass('over');
                     // then add the sortable class to the source
-                    source.addClass('sortable');
+                    // source.addClass('sortable');
                     // then add the source to the target (group)
                     target.append(source);
-                } else { //if the target is the sorting area
+                } else if ( target.hasClass('group-name') ) { //if the target is accidentaly a name input
+                    console.log("The target is supposed to be a group, but was name input");
+                    target = target.parent('.group');
+                    // first clean up extra classes
+                    source.removeClass('moving');
+                    target.removeClass('over');
+                    // then add the source to the target (group)
+                    target.append(source);
+                }  else  { //if the target is the sorting area
                     console.log("The target is neither a group nor the deck");
+                    console.log(target);
                     // first clean up extra classes
                     source.removeClass('moving');
                     target.removeClass('over');
@@ -180,6 +216,11 @@ $(document).ready(function(){
     $(document).on('dragleave', '.card', handleDragLeave);
     $(document).on('drop', '.card', handleDrop);
     $(document).on('dragend', '.card', handleDragEnd);
+
+    $(document).on('dragenter', '.group', handleDragEnter);
+    $(document).on('dragover', '.group', handleDragOver);
+    $(document).on('dragleave', '.group', handleDragLeave);
+    $(document).on('drop', '.group', handleDrop);
 
     sortSpace.on('dragenter', handleDragEnter);
     sortSpace.on('dragover', handleDragOver);

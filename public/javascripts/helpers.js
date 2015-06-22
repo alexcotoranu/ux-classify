@@ -1,26 +1,3 @@
-//polyfill for safety as per http://www.html5rocks.com/en/tutorials/dnd/basics/
-Element.prototype.hasClassName = function(name) {
-  return new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)").test(this.className);
-};
-
-Element.prototype.addClassName = function(name) {
-  if (!this.hasClassName(name)) {
-    this.className = this.className ? [this.className, name].join(' ') : name;
-  }
-};
-
-Element.prototype.removeClassName = function(name) {
-  if (this.hasClassName(name)) {
-    var c = this.className;
-    this.className = c.replace(new RegExp("(?:^|\\s+)" + name + "(?:\\s+|$)", "g"), " ");
-  }
-};
-
-//function to check for class
-function hasClass(element, cls) {
-    return (' ' + element.className + ' ').indexOf(' ' + cls + ' ') > -1;
-}
-
 //function to create a GUID
 function guid() {
   function s4() {

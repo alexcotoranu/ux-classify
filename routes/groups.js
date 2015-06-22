@@ -38,11 +38,11 @@ router.route('/new')
     //::::::::::::::::::::::CREATE NEW GROUP
     //POST a new group
     .post(function(req, res) {
-        var id = req.body.id;
+        // var id = req.body.id;
         
         //call the create function for our database
         mongoose.model('Group').create({
-            id: id
+            // id: id
         }, function (err, group) {
               if (err) {
                   res.send("There was a problem adding the new group to the database.");
@@ -61,6 +61,7 @@ router.route('/new')
                 //     //     res.send(group._id);
                 //     // }
                 // });
+                console.log(group);
                 res.send(group._id);
               }
         })
@@ -86,9 +87,11 @@ router.route('/save')
 
     //call the create function for our database
     mongoose.model('Group').findById(req.body.id, function (err, group) {
+      console.log(err);
+      console.log(group);
+
       group.update({
         name : name,
-        id : id,
         cards : cards,
         groups : groups
       }, function (err, group) {
@@ -97,19 +100,20 @@ router.route('/save')
           } else {
               //Card has been created
               console.log('POST saving group');
-              res.format({
-                  //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
-                html: function(){
-                    // If it worked, set the header so the address bar doesn't still say /adduser
-                    // res.location("cards");
-                    // And forward to success page
-                    // res.redirect("/cards");
-                },
-                //JSON response will show the newly created card
-                json: function(){
-                    res.json(card);
-                }
-            });
+              res.send(group._id);
+              // res.format({
+              //     //HTML response will set the location and redirect back to the home page. You could also create a 'success' page if that's your thing
+              //   html: function(){
+              //       // If it worked, set the header so the address bar doesn't still say /adduser
+              //       // res.location("cards");
+              //       // And forward to success page
+              //       // res.redirect("/cards");
+              //   },
+              //   //JSON response will show the newly created card
+              //   json: function(){
+              //       res.json(card);
+              //   }
+              // });
           }
       });
     });

@@ -1,32 +1,39 @@
 
 function saveDeck(name,cardArray,dateCreated){
-  console.log("Deck is being saved");
+    console.log("Deck is being saved");
   
-  var data = {
-    name: name,
-    cards: JSON.stringify(cardArray),
-    dateCreated: dateCreated
-  };
+    var data = {
+        name: name,
+        cards: JSON.stringify(cardArray),
+        dateCreated: dateCreated
+    };
 
-  console.log(data);
+    console.log(data);
 
-  //save groups
-  $.ajax({
-    url: '/decks/save',
-    type: 'POST',
-    data: data,
-    success:function(data, textStatus, jqXHR) 
-    {
-        //data: return data from server
-        console.log(data);
-        console.log("Project was successfully POSTED.");
-    },
-    error: function(jqXHR, textStatus, errorThrown)
-    {
-        //if fails
-        console.log(errorThrown);
-    }
-  });
+    //save groups
+    var post = $.ajax({
+        url: '/decks/',
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR) 
+        {
+            //data: return data from server
+            console.log(data);
+            console.log("Deck was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+            //if fails
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        console.log(res);
+        var deck = JSON.parse(res);
+        var newDeck = '<div id="'+deck._id+'" class="project"><div class="name">'+deck.name+'</div></div>'; //<div class="date">'+project.dateCreated+'</div>
+        $('.decks').prepend(newDeck);
+    });
 }
 
 function saveGroup(id){
@@ -176,32 +183,38 @@ function saveSession(experiment,participant,groupArray,dateHeld){
 }
 
 function saveProject(name,dateCreated){
-  console.log("Project is being saved");
+    console.log("Project is being saved");
   
-  var data = {
-    name: name,
-    dateCreated: dateCreated
-  };
+    var data = {
+        name: name,
+        dateCreated: dateCreated
+    };
 
-  console.log(data);
+    console.log(data);
 
-  //save groups
-  $.ajax({
-    url: '/projects/save',
-    type: 'POST',
-    data: data,
-    success:function(data, textStatus, jqXHR) 
-    {
-        //data: return data from server
-        console.log(data);
-        console.log("Project was successfully POSTED.");
-    },
-    error: function(jqXHR, textStatus, errorThrown)
-    {
-        //if fails
-        console.log(errorThrown);
-    }
-  });
+    //save groups
+    var post = $.ajax({
+        url: '/projects/',
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR){
+            //data: return data from server
+            console.log(data);
+            console.log("Project was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            //if fails
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        console.log(res);
+        var project = JSON.parse(res);
+        var newProject = '<div id="'+project._id+'" class="project"><div class="name">'+project.name+'</div></div>'; //<div class="date">'+project.dateCreated+'</div>
+        // var newProject = '<div class="project">BLANK TEST</div>';
+        $('.projects').prepend(newProject);
+    });
 }
 
 
@@ -245,15 +258,14 @@ function createGroup(target, source){
     var groupContent = target[0].outerHTML + source[0].outerHTML;
     console.log(groupContent);
 
-    var data = {
-        id: newGuid,
-    };
+    // var data = {
+    // };
 
     // save groups
     var post = $.ajax({
         url: '/groups/new',
         type: 'POST',
-        data: data,
+        // data: data,
         success:function(data, textStatus, jqXHR){
           // console.log(data);
           console.log("New Group was successfully POSTED.");

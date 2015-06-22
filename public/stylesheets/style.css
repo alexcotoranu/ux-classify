@@ -4,7 +4,8 @@ body {
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   display:flex;
   flex-direction:column;
-  background-color:#E7E7E7;
+  /*background-color:#E7E7E7;*/
+  background-color:#8FAFC2;
   padding: 0px;
   margin:40px 0px 0px 0px;
 }
@@ -29,6 +30,13 @@ a {
   padding-left:10px;
 }
 
+
+#modal {
+  display:none;
+  position: absolute;
+}
+
+
 /* Prevent the text contents of draggable elements from being selectable. */
 [draggable] {
   -moz-user-select: none;
@@ -40,7 +48,7 @@ a {
   -webkit-user-drag: element;
 }
 
-#space-wrapper {
+#page-wrapper {
   display:flex;
   flex-direction:row;
 }
@@ -85,6 +93,12 @@ a {
   display:none;
 }
 
+.group.over > .group-name,
+.card .word,
+.card .example {
+  pointer-events: none;
+}
+
 .card .example {
   color:#A0A0A0;
   font-size:10px;
@@ -95,7 +109,7 @@ a {
   background-color:#fefefe;
   float: left;
   text-align: center;
-  width: 250px;
+  width: 200px;
   /*height:180px;*/
   border-radius: 2px;
   border:1px solid #e6e6e6;
@@ -190,6 +204,10 @@ a {
   border-style:dashed;
 }
 
+.group.over .group-name {
+  background-color:#999999;
+}
+
 .card + .delete-group {
   display: none;
 }
@@ -204,10 +222,11 @@ a {
   display:none;
 }
 
-#save-btn {
+#save-btn,
+#new-btn {
   color:#ffffff;
   background-color:#63b672;
-  padding:3px;
+  padding:3px 10px;
   border-radius:2px;
   height:20px;
   float:right;
@@ -215,4 +234,83 @@ a {
   margin-top: -10px;
   margin-right: 10px;
   cursor:pointer;
+}
+
+#save-btn:hover,
+#new-btn:hover {
+  background-color:#12BD9C;
+}
+
+/* PROJECTS */
+
+.project {
+  display:inline-block;
+  width:150px;
+  height:75px;
+  background-color:#FEFEFE;
+  margin:15px;
+  vertical-align: top;
+  text-align: center;
+  line-height: 75px;
+  border-radius:2px;
+  font-size:18px;
+}
+
+.project:hover {
+  cursor: pointer;
+  background-color:#DFDFDF;
+}
+
+input.project-name {
+  border:none;
+  height:25px;
+  font-size:20px;
+  text-indent: 5px;
+  display:block;
+  float:right;
+  margin-top: -10px;
+  margin-right: 10px;
+}
+
+.project .name {
+  line-height: 14px;
+  display:inline-block;
+  vertical-align: middle;
+}
+
+/* DECKS */
+
+.deck {
+  display:inline-block;
+  width:150px;
+  height:75px;
+  background-color:#FEFEFE;
+  margin:15px;
+  vertical-align: top;
+  text-align: center;
+  line-height: 75px;
+  border-radius:2px;
+  font-size:18px;
+}
+
+.deck:hover {
+  cursor: pointer;
+  background-color:#DFDFDF;
+}
+
+input.deck-name {
+  border:none;
+  height:25px;
+  font-size:20px;
+  text-indent: 5px;
+  display:block;
+  float:right;
+  margin-top: -10px;
+  margin-right: 10px;
+}
+
+.deck .name {
+  line-height: 14px;
+  display:inline-block;
+  vertical-align: middle;
 }

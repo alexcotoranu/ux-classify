@@ -21,8 +21,7 @@ var deckSchema = new mongoose.Schema({
 mongoose.model('Deck', deckSchema);
 
 // -------------------------------------------------------------------------------- GROUPS
-var groupSchema = new mongoose.Schema({  
-    id: String,
+var groupSchema = new mongoose.Schema({
     name: String,
     cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }],
     groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],

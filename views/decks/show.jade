@@ -1,0 +1,6 @@
+h1 Name: #{deck.name}
+h3 Date Created: #{deck.dateCreated}
+div Cards:
+ -each card, i in deck.cards
+                div.deck(id="#{card._id}")
+                    //- span.name #{card.name}`

@@ -10,18 +10,18 @@ block content
         h2 #{title}
             div#save-btn save
 
-    div#space-wrapper
+    div#page-wrapper
 
         div#sorting-space.space
 
         div#right-sidebar
             div#cards
                 -each card, i in cards
-                    div.card(id="#{card._id}" draggable="true") #{card.word} #{card.example}
-
+                    div.card(id="#{card._id}" draggable="true") 
+                        //- #{card.word} #{card.example}
                         //- div.header #{card.badge}
-                        //- div.word #{card.word}
-                        //- div.example #{card.example}
+                        div.word #{card.word}
+                        div.example #{card.example}
 
                         div.footer
                             div.option
