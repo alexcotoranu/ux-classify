@@ -169,7 +169,7 @@ router.route('/:id')
       } else {
         console.log('GET Retrieving ID: ' + card._id);
         var cardcreated = card.dateCreated.toISOString();
-        cardcreated = cardcreated.substring(0, cardcreated.indexOf('T'))
+        cardcreated = cardcreated.substring(0, cardcreated.indexOf('T'));
         res.format({
           html: function(){
               res.render('cards/show', {
@@ -203,7 +203,7 @@ router.get('/:id/edit', function(req, res) {
             res.format({
                 //HTML response will render the 'edit.jade' template
                 html: function(){
-                       res.render('cards/edit', {
+                      res.render('cards/edit', {
                           title: 'Card' + card._id,
                           "cardcreated" : cardcreated,
                           "card" : card
@@ -244,13 +244,13 @@ router.put('/:id/edit', function(req, res) {
               else {
                       //HTML responds by going back to the page or you can be fancy and create a new view that shows a success page.
                       res.format({
-                          html: function(){
+                        html: function(){
                                res.redirect("/cards/" + card._id);
-                         },
-                         //JSON responds showing the updated values
+                        },
+                        //JSON responds showing the updated values
                         json: function(){
                                res.json(card);
-                         }
+                        }
                       });
                }
             })

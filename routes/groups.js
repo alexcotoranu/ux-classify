@@ -15,6 +15,57 @@ router.use(methodOverride(function(req, res){
       }
 }));
 
+router.route('/:id/get')
+    //::::::::::::::::::::::GET OBJECT ID OF GROUP
+    //GET group id
+    .get(function(req, res, next) {
+        mongoose.model('Group').findOne({id:req.params['id']}, function (err, group) {
+              if (err) {
+                  return console.error(err);
+              } else {
+                  console.log(group);
+                  console.log('Group ObjectId for '+ req.params['id'] +': ' + group._id);
+                  res.format({  
+                    html: function(){
+                      res.send(group._id);
+                    }
+                });
+              }     
+        });
+    });
+
+router.route('/new')
+    //::::::::::::::::::::::CREATE NEW GROUP
+    //POST a new group
+    .post(function(req, res) {
+        var id = req.body.id;
+        
+        //call the create function for our database
+        mongoose.model('Group').create({
+            id: id
+        }, function (err, group) {
+              if (err) {
+                  res.send("There was a problem adding the new group to the database.");
+              } else {
+                  //Group has been created
+                  // console.log('POST created new group: ' + group);
+                  console.log('POST created new group with objectID: ' + group._id);
+                //   res.format({
+                //     // html: function(){
+                //     //     res.send(group._id);
+                //     // },
+                //     // json: function(){
+                //     //     res.send({id:group._id});
+                //     // },
+                //     // text: function(){
+                //     //     res.send(group._id);
+                //     // }
+                // });
+                res.send(group._id);
+              }
+        })
+    });
+
 //::::::::::::::::::::::SAVE THE GROUPS
 router.route('/save')
   .post(function(req, res) {
@@ -34,12 +85,13 @@ router.route('/save')
     console.log("Groups Array:" + groups);
 
     //call the create function for our database
-    mongoose.model('Group').create({
+    mongoose.model('Group').findById(req.body.id, function (err, group) {
+      group.update({
         name : name,
         id : id,
         cards : cards,
         groups : groups
-    }, function (err, group) {
+      }, function (err, group) {
           if (err) {
               res.send("There was a problem adding the information to the database.");
           } else {
@@ -59,7 +111,8 @@ router.route('/save')
                 }
             });
           }
-    })
-});
+      });
+    });
+  });
 
 module.exports = router;

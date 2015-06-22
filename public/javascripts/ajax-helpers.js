@@ -29,11 +29,33 @@ function saveDeck(name,cardArray,dateCreated){
   });
 }
 
-function saveGroup(id,name,cardArray,groupArray){
-  // event.preventDefault(); // Stop the form from causing a page refresh.
-  // event.unbind(); // this is supposed to stop multiple form submissions
-  console.log("Groups are being saved");
-  
+function saveGroup(id){
+  console.log("Group " + id + " is being saved!");
+  //select only input directly inside the group 
+  var nameInput = '#' + id +' > input';
+  //group name from user input
+  var name = $(nameInput).val();
+  var cardArray = [];
+  var groupArray = [];
+  //select only cards directly inside the group 
+  var nestedCards = '#' + id +' > .card';
+  //select only groups directly inside the group 
+  var nestedGroups = '#' + id +' > .group';
+  // for each card in the group
+  $(nestedCards).each(function(){
+    var cardID = $(this).attr('id');
+    // append it to the list of cards like so: cardsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
+    cardArray.push(cardID);
+    // console.log(cardsInGroup);
+  });
+  // for each card in the group
+  $(nestedGroups).each(function(){
+    var groupID = $(this).attr('id');
+    // append it to the list of cards like so: groupsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
+    groupArray.push(groupID);
+    // console.log(groupID);
+  });
+
   var data = {
     id: id,
     name: name,
@@ -183,60 +205,79 @@ function saveProject(name,dateCreated){
 }
 
 
-$(document).ready(function() {
 
-  $('#save-btn').on("click", function(){
-    console.log("Save was clicked");
-    $('.group').each(function() {
-      var parentGroup = $(this);
-      var parentGroupID = parentGroup.attr('id');
-      console.log("Group ID: " + parentGroupID);
-     
-      //select only input directly inside the group 
-      var inputSelector = '#' + parentGroupID +' > input';
-      console.log(inputSelector);
-      //group name from user input
-      var parentGroupName = $(inputSelector).val();
+function parentIsGroup(childId) {
+    if ($("#"+childId).parent().hasClass('group')){
+        return true;
+    } else {
+        return false;
+    }
+}
 
-      // custom group changed event listener
-      //parentGroup.on("group:changed", function (){
-        console.log("Group has changed.");
-        console.log("parentGroupName: " + parentGroupName);
-        var cardsInGroup = [];
-        var groupsInGroup = [];
-        //select only cards directly inside the group 
-        var cardSelector = '#' + parentGroupID +' > .card';
-        //console.log(cardSelector);
-        //select only groups directly inside the group 
-        var groupSelector = '#' + parentGroupID +' > .group';
-        //console.log(groupSelector);
-        
-        // for each card in the group
-        $(cardSelector).each(function(){
-          var cardID = $(this).attr('id');
-          // append it to the list of cards like so: cardsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
-          cardsInGroup.push(cardID);
-          console.log(cardsInGroup);
-        });
 
-        // for each card in the group
-        $(groupSelector).each(function(){
-          var groupID = $(this).attr('id');
-          // append it to the list of cards like so: groupsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
-          groupsInGroup.push(groupID);
-          console.log(groupID);
-        });
+function createGroup(target, source){
+    //the target's id
+    targetId = target.attr('id');
+    //the source's id
+    sourceId = source.attr('id');
 
-        saveGroup(parentGroupID,parentGroupName,cardsInGroup,groupsInGroup);
-      //});
+    // targetParentId = target.parentNode.id;
+    // sourceParentId = source.parentNode.id;
 
-      // $(inputSelector).on('change', function () {
-      //   parentGroup.trigger("group:changed");
-      // });
+    // if (parentIsGroup(targetId)){
+    //     console.log('The TargetParent IS a group!!!');
+    //     saveGroup(targetParentId);
+    // }
 
+    // if (parentIsGroup(sourceId)){
+    //     console.log('The SourceParent IS a group!!!');
+    //     saveGroup(sourceParentId);
+    // }
+
+    console.log("Group is being created for: " + targetId + " and " + sourceId);
+
+    // var groupContent = group.innerHTML;
+    var newGuid = guid();
+    var newColour = randomHexColour();
+    var oddOrEven = target.parent().hasClass('odd') ? 'even': 'odd';
+
+    //combined content
+    var groupContent = target[0].outerHTML + source[0].outerHTML;
+    console.log(groupContent);
+
+    var data = {
+        id: newGuid,
+    };
+
+    // save groups
+    var post = $.ajax({
+        url: '/groups/new',
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR){
+          // console.log(data);
+          console.log("New Group was successfully POSTED.");
+          // console.log(textStatus);
+          // console.log(jqXHR);
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+          //if fails 
+          console.log(errorThrown);     
+        }
     });
 
+    post.done(function(res){
+        console.log("This will be the group ID: "+ res);
+        groupHtml ='<div class="group '+ oddOrEven +'" id="' + res + '" style="border-color:' + newColour + ';"><input type="text" class="group-name" name="groupname" placeholder="Group Name Here..."><div class="delete-group">X</div>'+ groupContent +'</div>';
+        target.replaceWith(groupHtml);
+        source.remove();
+        saveGroup(res);
+        
+        // if (parentIsGroup(res)){
+        //     console.log('The Parent IS a group!!!');
+        //     var parentGroup = $("#"+res).parent().attr('id');
+        //     saveGroup(parentGroup);
+        // }
 
-  });
-
-});
+    });
+}
