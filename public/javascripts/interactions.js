@@ -7,7 +7,19 @@ $(document).ready(function() {
         // console.log("Create New was clicked");
         var name = $('input.project-name').val();
         // console.log(name);
-        saveProject(name);
+        createProject(name);
+    });
+
+    //::::::::: EXPERIMENTS
+    // "create new" button logic
+    $('#create-btn.new-experiment').on("click", function(){
+        // console.log("Create New was clicked");
+        var name = $('input#experiment-name').val();
+        var project = $('select#experiment-project').val();
+        var category = $('input#experiment-category').val();
+        var deck = $('select#experiment-deck').val();
+        console.log(name);
+        createExperiment(name,project,category,deck);
     });
 
     //::::::::: DECKS
@@ -16,7 +28,7 @@ $(document).ready(function() {
         // console.log("Create New was clicked");
         var name = $('input.deck-name').val();
         // console.log(name);
-        saveDeck(name);
+        createDeck(name);
     });
 
     $(document).on("click",".deck", function(){
@@ -41,6 +53,17 @@ $(document).ready(function() {
         saveGroup(id);
     });
 
+    // selecting cards for deck
+    $(document).on('click','#all-cards .card', function () {
+        $(this).toggleClass('selected');
+    });
+
+    // save deck deck
+    $(document).on('click','#save-btn.save-deck', function () {
+        var id = $(this).parent('.deck').attr('id');
+        console.log(id);
+        saveDeck(id);
+    });
 });
 
 // drag and drop functionality

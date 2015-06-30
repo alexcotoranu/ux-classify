@@ -1,5 +1,5 @@
 
-function saveDeck(name,cardArray,dateCreated){
+function createDeck(name,cardArray,dateCreated){
     console.log("Deck is being saved");
   
     var data = {
@@ -34,6 +34,44 @@ function saveDeck(name,cardArray,dateCreated){
         var newDeck = '<div id="'+deck._id+'" class="project"><div class="name">'+deck.name+'</div></div>'; //<div class="date">'+project.dateCreated+'</div>
         $('.decks').prepend(newDeck);
     });
+}
+
+function saveDeck(id){
+  console.log("Group " + id + " is being saved!");
+  var cardArray = [];
+  //select only cards directly inside the group 
+  var selectedCards = '.card.selected';
+  
+  $(selectedCards).each(function(){
+    var cardID = $(this).attr('id');
+    // append it to the list of cards like so: cardsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
+    cardArray.push(cardID);
+    // console.log(cardsInGroup);
+  });
+
+  var data = {
+    cards: JSON.stringify(cardArray),
+  };
+
+  console.log(data);
+
+  //save groups
+  $.ajax({
+    url: '/decks/'+id,
+    type: 'POST',
+    data: data,
+    success:function(data, textStatus, jqXHR) 
+    {
+        //data: return data from server
+        console.log(data);
+        console.log("Deck was successfully POSTED.");
+    },
+    error: function(jqXHR, textStatus, errorThrown) 
+    {
+        //if fails 
+        console.log(errorThrown);     
+    }
+  });
 }
 
 function saveGroup(id){
@@ -182,12 +220,47 @@ function saveSession(experiment,participant,groupArray,dateHeld){
   });
 }
 
-function saveProject(name,dateCreated){
-    console.log("Project is being saved");
+function createExperiment(name,project,category,deck){
+    console.log("Experiment is being created");
   
     var data = {
         name: name,
-        dateCreated: dateCreated
+        project: project,
+        category: category,
+        deck: deck
+    };
+
+    console.log(data);
+
+    //save groups
+    var post = $.ajax({
+        url: '/experiments/',
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR){
+            //data: return data from server
+            console.log(data);
+            console.log("Experiment was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown){
+            //if fails
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        console.log(res);
+        var experiment = JSON.parse(res);
+        var newExperiment = '<div id="'+experiment._id+'" class="experiment"><div class="name">'+experiment.name+'</div></div>'; //<div class="date">'+experiment.dateCreated+'</div>
+        $('.experiments').prepend(newExperiment);
+    });
+}
+
+function createProject(name){
+    console.log("Project is being saved");
+  
+    var data = {
+        name: name
     };
 
     console.log(data);

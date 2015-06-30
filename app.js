@@ -16,7 +16,7 @@ var decks = require('./routes/decks');
 var groups = require('./routes/groups');
 var participants = require('./routes/participants');
 var sessions = require('./routes/sessions');
-// var experiments = require('./routes/experiments');
+var experiments = require('./routes/experiments');
 var projects = require('./routes/projects');
 var users = require('./routes/users');
 
@@ -40,7 +40,7 @@ app.use('/decks', decks);
 app.use('/groups', groups);
 app.use('/participants', participants);
 app.use('/sessions', sessions);
-// app.use('/experiments', experiments);
+app.use('/experiments', experiments);
 app.use('/projects', projects);
 app.use('/users', users);
 

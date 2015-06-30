@@ -63,6 +63,7 @@ mongoose.model('Session', sessionSchema);
 
 // -------------------------------------------------------------------------------- EXPERIMENTS
 var experimentSchema = new mongoose.Schema({
+    name: String,
     project: { type: Schema.Types.ObjectId, ref: 'Project' },
     deck: { type: Schema.Types.ObjectId, ref: 'Deck' },
     category: String, //i.e. "open" or "closed"

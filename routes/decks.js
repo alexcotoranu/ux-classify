@@ -69,20 +69,64 @@ router.route('/')
 router.route('/:id')
     .get(function(req, res, next) {
         mongoose.model('Deck').findById(req.params['id'], function (err, deck) {
-              if (err) {
-                  return console.error(err);
-              } else {
-                  res.format({
-                    html: function(){
-                        res.render('decks/show', {
-                            "deck" : deck
+            if (err) {
+                return console.error("Deck: " + err);
+            } else {
+                mongoose.model('Card').find({'_id': {'$in':deck.cards}}, function (err, cardsindeck) {
+                    if (err) {
+                        return console.error("Cards In Deck: " + err);
+                    } else {
+                        mongoose.model('Card').find({}, function (err, cards) {
+                            if (err) {
+                                return console.error("Cards: " + err);
+                            } else {
+                                res.format({
+                                    html: function(){
+                                        res.render('decks/show', {
+                                            "deck" : deck,
+                                            "cards" : cards,
+                                            "cardsindeck" : cardsindeck
+                                        });
+                                    },
+                                    json: function(){
+                                        res.json(deck, cardsindeck, cards);
+                                    }
+                                });
+                            }
                         });
-                    },
-                    json: function(){
-                        res.json(deck);
                     }
                 });
-              }     
+            }     
+        });
+    })
+    //::::::::::::::::::::::UPDATE DECK
+    .post(function(req, res) {
+        // Get values from POST request
+        var cards = JSON.stringify(req.body.cards);
+        var jCards = JSON.parse(req.body.cards);
+        console.log(cards);
+        var date = new Date();
+        //call the create function for our database
+        mongoose.model('Deck').findById(req.params['id'], function (err, deck) {
+            deck.update({
+                cards : jCards,
+            }, function (err, updateddeck) {
+                if (err) {
+                    console.log(err);
+                    res.send("There was a problem adding the DECK to the database.");
+                } else {
+                    //Card has been created
+                    console.log('POST updated DECK: ' + deck);
+                    res.format({
+                        html: function(){
+                            res.send(updateddeck);
+                        },
+                        json: function(){
+                            res.json(updateddeck);
+                        }
+                    });
+                }
+            });
         });
     });
 

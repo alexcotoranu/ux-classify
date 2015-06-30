@@ -7,14 +7,13 @@ var methodOverride = require('method-override');
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(methodOverride(function(req, res){
-      if (req.body && typeof req.body === 'object' && '_method' in req.body) {
+    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
         // look in urlencoded POST bodies and delete it
         var method = req.body._method
         delete req.body._method
         return method
-      }
+    }
 }));
-
 
 
 //::::::::::::::::::::::VIEW ALL EXPERIMENTS
@@ -89,52 +88,36 @@ router.route('/')
 router.route('/:id')
     .get(function(req, res, next) {
         mongoose.model('Experiment').findById(req.params['id'], function (err, experiment) {
-              if (err) {
-                  return console.error(err);
-              } else {
-                  res.format({
-                    html: function(){
-                        res.render('experiments/show', {
-                            "experiment" : experiment
+            if (err) {
+                return console.error(err);
+            } else {
+                mongoose.model('Project').findById(experiment.project, function (err, project) {
+                    if (err) {
+                        return console.error(err);
+                    } else {
+                        mongoose.model('Deck').findById(experiment.deck, function (err, deck) {
+                            if (err) {
+                                return console.error(err);
+                            } else {
+                                res.format({
+                                    html: function(){
+                                        res.render('experiments/show', {
+                                            title: 'UX-Classify',
+                                            "project" : project,
+                                            "deck" : deck,
+                                            "experiment" : experiment
+                                        });
+                                    },
+                                    json: function(){
+                                        res.json(experiment, project, deck);
+                                    }
+                                });
+                            }
                         });
-                    },
-                    json: function(){
-                        res.json(deck);
                     }
                 });
-              }     
+            }
         });
-    });
-
-
-//::::::::::::::::::::::SAVE THE SESSION
-router.route('/save')
-  .post(function(req, res) {
-        var experiment = req.body.experiment;
-        var participant = req.body.participant;
-        var groups = JSON.parse(req.body.groups);
-        var dateHeld = req.body.dateHeld;
-        mongoose.model('Session').create({
-            experiment : experiment,
-            participant : participant,
-            groups: groups,
-            dateHeld : dateHeld
-        }, function (err, session) {
-              if (err) {
-                  res.send("There was a problem adding the information to the database.");
-              } else {
-                  //Card has been created
-                  console.log('POST creating new session: ' + session);
-                  res.format({
-                    html: function(){
-                        res.send(session);
-                    },
-                    json: function(){
-                        res.json(session);
-                    }
-                });
-              }
-        })
     });
 
 module.exports = router;
