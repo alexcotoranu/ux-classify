@@ -1,21 +1,8 @@
-var express = require('express');
-var router = express.Router();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
-var methodOverride = require('method-override');
 var passport = require('passport');
+var serveStatic = require('serve-static');
 var LocalStrategy = require('passport-local').Strategy;
-
-//copy-pasted from method-override
-router.use(bodyParser.urlencoded({ extended: true }));
-router.use(methodOverride(function(req, res){
-    if (req.body && typeof req.body === 'object' && '_method' in req.body) {
-        // look in urlencoded POST bodies and delete it
-        var method = req.body._method
-        delete req.body._method
-        return method
-    }
-}));
 
 // expose this function to our app using module.exports
 module.exports = function(passport) {
@@ -45,34 +32,34 @@ module.exports = function(passport) {
         // asynchronous
         // User.findOne wont fire unless data is sent back
         process.nextTick(function() {
-          console.log("check if email is already in use");
-          // find a user whose email is the same as the forms email
-          // we are checking to see if the user trying to login already exists
-          mongoose.model('User').findOne({ 'local.email' :  email }, function(err, user) {
-              // if there are any errors, return the error
-              if (err)
-                  return done(err);
-              // check to see if theres already a user with that email
-              if (user) {
-                  return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
-              } else {
-                  console.log("The system is trying to register a user.")
-                  // if there is no user with that email
-                  // create the user
-                  console.log(mongoose.model('User').schema.methods);
-                  var hashedPassword = mongoose.model('User').schema.methods.generateHash(password);
-                  mongoose.model('User').create({
-                    // set the user's local credentials
-                    'local.email' : email,
-                    'local.password' : hashedPassword
-                  }, function (err, newUser) {
-                      if (err)
-                          throw err;
-                      return done(null, newUser);
-                  });
-              }
+            console.log("check if email is already in use");
+            // find a user whose email is the same as the forms email
+            // we are checking to see if the user trying to login already exists
+            mongoose.model('User').findOne({ 'local.email' :  email }, function(err, user) {
+                // if there are any errors, return the error
+                if (err)
+                    return done(err);
+                // check to see if theres already a user with that email
+                if (user) {
+                    return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+                } else {
+                      console.log("The system is trying to register a user.")
+                    // if there is no user with that email
+                    // create the user
+                    console.log(mongoose.model('User').schema.methods);
+                    var hashedPassword = mongoose.model('User').schema.methods.generateHash(password);
+                    mongoose.model('User').create({
+                        // set the user's local credentials
+                        'local.email' : email,
+                        'local.password' : hashedPassword
+                    }, function (err, newUser) {
+                        if (err)
+                            throw err;
+                        return done(null, newUser);
+                      });
+                  }
 
-          });    
+            });
 
         });
 
@@ -87,6 +74,10 @@ module.exports = function(passport) {
     },
     function(req, email, password, done) { // callback with email and password from our form
         console.log("local login strategy");
+        console.log(req);
+        console.log(email);
+        console.log(password);
+        console.log(done);
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
         mongoose.model('User').findOne({ 'local.email' :  email }, function(err, user) {

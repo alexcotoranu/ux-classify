@@ -50,50 +50,12 @@ router.route('/login')
             }
         });
     })// process the login form
-    .post(function(req, res, next) {
-        console.log(req.body);
-        // passport.authenticate('local-login', {
-        //     successRedirect : '/profile', // redirect to the secure profile section
-        //     failureRedirect : '/login', // redirect back to the signup page if there is an error
-        //     failureFlash : true // allow flash messages
-        // });
-        passport.authenticate('local-login', function(err, user, info) {
-            if (err) {
-                return console.error(err); // Error code 500
-            } else if (!user) {
-                res.format({
-                    html: function(){
-                        res.render('login', {
-                            message : err
-                        });
-                    },
-                    json: function(){
-                        res.json(err);
-                    }
-                });
-            } else {
-                mongoose.model('Experiment').find({}).sort({dateCreated: -1}).exec(function (err, experiments) {
-                    if (err) {
-                        return console.error(err);
-                    } else {
-                        // res.location('profile');
-                        res.setHeader('Location', 'profile');
-                        res.format({
-                            html: function(){
-                                res.render('profile', {
-                                    user : user,
-                                    info: info,
-                                    experiments: experiments
-                                });
-                            },
-                            json: function(){
-                                res.json(user,info, experiments);
-                            }
-                        });
-                    }
-                });
-            }
-        })(req,res,next);
+    .post(function (req, res, next) {
+        return passport.authenticate('local-login', {
+            successRedirect : '/profile', // redirect to the secure profile section
+            failureRedirect : '/login', // redirect back to the login page if there is an error
+            failureFlash : true // allow flash messages
+        })(req, res, next);
     });
 
 
@@ -118,45 +80,12 @@ router.route('/signup')
         });
     })
     // process the signup form
-    .post(function(req, res, next) {
-        console.log(req.body);
-        passport.authenticate('local-signup', function(err, user, info) {
-            if (err) {
-                return console.error(err); // Error code 500
-            } else if (!user) {
-                res.format({
-                    html: function(){
-                        res.render('signup', {
-                            message : err
-                        });
-                    },
-                    json: function(){
-                        res.json(err);
-                    }
-                });
-            } else {
-                mongoose.model('Experiment').find({}).sort({dateCreated: -1}).exec(function (err, experiments) {
-                    if (err) {
-                        return console.error(err);
-                    } else {
-                        // res.location('profile');
-                        res.setHeader('Location','profile');
-                        res.format({
-                            html: function(){
-                                res.render('profile', {
-                                    user : user,
-                                    info: info,
-                                    experiments: experiments
-                                });
-                            },
-                            json: function(){
-                                res.json(user,info, experiments);
-                            }
-                        });
-                    }
-                });
-            }
-        })(req,res,next);
+    .post(function (req, res, next) {
+        return passport.authenticate('local-signup', {
+            successRedirect : '/profile', // redirect to the secure profile section
+            failureRedirect : '/signup', // redirect back to the signup page if there is an error
+            failureFlash : true // allow flash messages
+        })(req, res, next);
     });
 
 
@@ -165,17 +94,23 @@ router.route('/signup')
 // we will use route middleware to verify this (the isLoggedIn function)
 router.route('/profile')
     .get(isLoggedIn, function(req, res, next) {
-        // get the user out of session and pass to template
-        res.location('/profile');
-        res.setHeader('Location','profile');
-        res.format({
-            html: function(){
-                res.render('profile', {
-                    user : req.user
+        mongoose.model('Experiment').find({}).sort({dateCreated: -1}).exec(function (err, experiments) {
+            if (err) {
+                console.error(err);
+            } else {
+                res.location('profile');
+                // res.setHeader('Location', 'profile');
+                res.format({
+                    html: function(){
+                        res.render('profile', {
+                            user : req.user,
+                            experiments: experiments
+                        });
+                    },
+                    json: function(){
+                        res.json(user, experiments);
+                    }
                 });
-            },
-            json: function(){
-                res.json(req.user);
             }
         });
     });
@@ -201,9 +136,6 @@ function isNotLoggedIn(req, res, next) {
     res.setHeader('Location','profile');
     res.redirect('/profile');
 }
-
- 
-
 
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {

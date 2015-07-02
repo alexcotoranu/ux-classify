@@ -26,7 +26,6 @@ var groupSchema = new mongoose.Schema({
     name: String,
     cards: [{ type: Schema.Types.ObjectId, ref: 'Card' }],
     groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
-    // groups:[{ id: String }]
 });
 mongoose.model('Group', groupSchema);
 
@@ -42,22 +41,13 @@ mongoose.model('Group', groupSchema);
 // });
 // mongoose.model('Email', emailSchema);
 
-
-// -------------------------------------------------------------------------------- PARTICIPANTS
-var participantSchema = new mongoose.Schema({
-    name: String,
-    dateJoined: { type: Date, default: Date.now },
-    // email: [type: Schema.Types.ObjectId, ref: 'Email'}],
-});
-mongoose.model('Participant', participantSchema);
-
-
 // -------------------------------------------------------------------------------- SESSIONS
 var sessionSchema = new mongoose.Schema({
     experiment: { type: Schema.Types.ObjectId, ref: 'Experiment' },
     participant : { type: Schema.Types.ObjectId, ref: 'Participant' },
     groups: [{ type: Schema.Types.ObjectId, ref: 'Group' }],
-    dateHeld: { type: Date, default: Date.now }
+    dateCreated: { type: Date, default: Date.now },
+    dateSubmitted: { type: Date, default: Date.now }
 });
 mongoose.model('Session', sessionSchema);
 

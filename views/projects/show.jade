@@ -5,18 +5,11 @@ block script
     script(type="text/javascript" src="../javascripts/interactions.js")
 
 block content
-  
-    header#top-header
-        h2 #{title}
-
 
     div#project-wrapper
-        h1 Name: #{project.name}
-        h3 Date Created: #{project.dateCreated}
-
+        h1 #{project.name} Experiments
 
         div#experiment-wrapper
-            h1 Experiments
             div#new-form
                 label(for="experiment-name") Name:
                 input#experiment-name(placeholder="e.g. experiment 1")
@@ -26,14 +19,15 @@ block content
                 select#experiment-deck
                     -each deck, i in decks
                         option(value="#{deck._id}") #{deck.name}
-                div#create-btn.new-experiment Create New
+                div.btn(class="new-experiment") Create New
 
 
             div.experiments      
                     
                 -each experiment, i in experiments
                     -console.log(experiment.name);
-                    div.experiment(id="#{experiment._id}")
-                        span.name #{experiment.name}
+                    a(href="/projects/#{project._id}/#{experiment._id}/new")
+                        div.experiment(id="#{experiment._id}")
+                            span.name #{experiment.name}
 
 
