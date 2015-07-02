@@ -1,14 +1,15 @@
 var express = require('express');
 var app = express();
-var port = process.env.PORT || 8080;
+var router = express.Router();
+var port = process.env.PORT || 3000;
 var path = require('path');
 var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
-var passport = require('passport');
 var session = require('express-session');
+var passport = require('passport');
 var flash = require('connect-flash');
 
 var db = require('./model/db');
@@ -19,7 +20,6 @@ var routes = require('./routes/index');
 var cards = require('./routes/cards');
 var decks = require('./routes/decks');
 var groups = require('./routes/groups');
-var participants = require('./routes/participants');
 var sessions = require('./routes/sessions');
 var experiments = require('./routes/experiments');
 var projects = require('./routes/projects');
@@ -46,6 +46,7 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
+app.use(router);
 
 // pass passport module for configuration
 require('./config/passport')(passport);
@@ -55,7 +56,6 @@ app.use('/', routes);
 app.use('/cards', cards);
 app.use('/decks', decks);
 app.use('/groups', groups);
-app.use('/participants', participants);
 app.use('/sessions', sessions);
 app.use('/experiments', experiments);
 app.use('/projects', projects);

@@ -9,7 +9,7 @@ block content
             |  Login
 
         //- show any messages that come back with authentication
-        if message
+        if message.length > 0
             div(class="alert alert-danger") #{message}
 
         //- LOGIN FORM

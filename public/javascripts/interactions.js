@@ -19,7 +19,7 @@ $(document).ready(function() {
 
 
     // "create new" button logic
-    $('#create-btn.new-experiment').on("click", function(){
+    $('.new-experiment').on("click", function(){
         // console.log("Create New was clicked");
         var name = $('input#experiment-name').val();
         var project = $('select#experiment-project').val();
@@ -54,13 +54,16 @@ $(document).ready(function() {
     //     });
     // });
 
-    $('#save-btn.session').on("click", function(){
+    $('#save-session').on("click", function(){
         // console.log("Save was clicked");
-        var name = $('#participant-input').val();
-        saveParticipant(name, function(err, id){
-            saveSession(id);
+        var groups = [];
+        $('.group').each(function() {
+            var id = $(this).attr('id');
+            saveGroup(id);
+            groups.push(id);
         });
-        
+        var sessionId = $(this).attr('data-session-id');
+        saveSession(sessionId,groups); 
     });
 
     // group name change logic

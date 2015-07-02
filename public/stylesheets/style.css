@@ -83,13 +83,30 @@ a {
   flex-direction:row;
 }*/
 
+#session-wrapper {
+  position: absolute;
+  top: 50px;
+  left: 0px;
+  width: 100%;
+}
 
+#session-actions {
+  padding:10px 15px;
+  background-color: #3F474A;
+}
+
+#session-actions h2 {
+  margin:0px;
+  display: inline-block;
+  color:#AEAEAE;
+}
 
 #sorting-space {
   /*flex:1;*/
   background-color:#515D62;
-  min-height:calc(100vh - 40px);
+  min-height:calc(100vh - 50px);
   height:100%;
+  padding:10px;
   transition:0.5s all;
 }
 
@@ -290,7 +307,6 @@ a {
   display:none;
 }
 
-#save-btn,
 #new-btn {
   color:#ffffff;
   background-color:#63b672;
@@ -318,7 +334,6 @@ a {
   display:inline-block;
 }
 
-#save-btn:hover,
 #new-btn:hover,
 #create-btn:hover {
   background-color:#12BD9C;
