@@ -11,6 +11,13 @@ $(document).ready(function() {
     });
 
     //::::::::: EXPERIMENTS
+
+    // $(document).on("click",".experiment", function(){
+    //     var experimentId = $(this).attr('id');
+    //     $('#page-wrapper').load('/projects/experiments/'+experimentId);
+    // });
+
+
     // "create new" button logic
     $('#create-btn.new-experiment').on("click", function(){
         // console.log("Create New was clicked");
@@ -39,12 +46,21 @@ $(document).ready(function() {
     //::::::::: CARDS & GROUPS
 
     // "save" button logic
-    $('#save-btn').on("click", function(){
+    // $('#save-btn').on("click", function(){
+    //     // console.log("Save was clicked");
+    //     $('.group').each(function() {
+    //         var id = $(this).attr('id');
+    //         saveGroup(id);
+    //     });
+    // });
+
+    $('#save-btn.session').on("click", function(){
         // console.log("Save was clicked");
-        $('.group').each(function() {
-            var id = $(this).attr('id');
-            saveGroup(id);
+        var name = $('#participant-input').val();
+        saveParticipant(name, function(err, id){
+            saveSession(id);
         });
+        
     });
 
     // group name change logic

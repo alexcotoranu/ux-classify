@@ -8,24 +8,16 @@ body {
   background-color:#8FAFC2;
   padding: 0px;
   margin:40px 0px 0px 0px;
+  outline-style: none;
+  padding-top: 50px;
 }
 
 a {
   color: #00B7FF;
 }
 
-h1,h2,h3 {
-  color:#FFFFFF;
-}
-
-#top-header {
-  height:40px;
+#app-navbar {
   background-color:#4086A5;
-  width:100%;
-  position: fixed;
-  top:0px;
-  left:0px;
-  color:#ffffff;
   line-height:5px;
 }
 
@@ -33,6 +25,41 @@ h1,h2,h3 {
   padding-left:10px;
 }
 
+#app-home {
+  width:140px;
+  display:block;
+}
+
+#app-name {
+  font-weight: bold;
+  color:#ffffff;
+}
+
+#user-email {
+  color:white;
+  font-weight: bold;
+  line-height: 50px;
+  margin-right: 10px;
+}
+
+#logout-button {
+  margin-right:30px;
+}
+
+.btn {
+  color:#ffffff;
+  background-color:#63b672;
+  transition:all 0.5s;
+}
+
+.btn:hover{
+  color:#ffffff;
+  background-color:#12BD9C;
+}
+
+#login-toolbar {
+  display: inline-block;
+}
 
 #modal {
   display:none;
@@ -275,6 +302,7 @@ h1,h2,h3 {
   margin-top: -10px;
   margin-right: 10px;
   cursor:pointer;
+  text-decoration: none;
 }
 
 #create-btn {

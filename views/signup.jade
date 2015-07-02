@@ -1,0 +1,31 @@
+extends layout
+
+block content
+
+    div(class="col-sm-6 col-sm-offset-3")
+
+        h1
+            span(class="fa fa-sign-in")
+            |  Signup
+
+        //- show any messages that come back with authentication
+        if message
+            div(class="alert alert-danger") #{message}
+
+        //- LOGIN FORM
+        form(action="/signup" method="post")
+            div(class="form-group")
+                label(for="email") Email
+                input#email.form-control(type="text" name="email")
+            div(class="form-group")
+                label(for="password") Password
+                input#password.form-control(type="password" name="password")
+
+            button.btn(type="submit" class="btn-warning btn-lg") Signup
+        hr
+
+        p Already have an account? 
+            a(href="/login") Login
+        p Or go 
+            a(href="/") home
+            |.

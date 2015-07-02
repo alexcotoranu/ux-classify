@@ -3,6 +3,9 @@ var router = express.Router();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
+var passport = require('passport');
+var serveStatic = require('serve-static');
+var LocalStrategy = require('passport-local').Strategy;
 
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -34,7 +37,7 @@ router.route('/')
                         res.json(projects);
                     }
                 });
-              }     
+              }
         });
     })//::::::::::::::::::::::CREATE A NEW PROJECT
     //POST a new project
@@ -183,7 +186,7 @@ router.route('/:id/:exid/')
 router.route('/:id/:exid/new')
     //::::::::::::::::::::::RUN NEW SESSION
     //GET all cards in deck
-    .get(function(req, res, next) {
+    .get(isLoggedIn, function(req, res, next) {
         mongoose.model('Experiment').findById(req.params['exid'], function (err, experiment) {
             if (err) {
                 return console.error("Experiment: " + err);
@@ -216,5 +219,17 @@ router.route('/:id/:exid/new')
         });
     });
 
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
 
 module.exports = router;

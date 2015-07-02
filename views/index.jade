@@ -1,17 +1,17 @@
 extends layout
 
 block content
-  
-    header#top-header
-        h2 #{title}
 
-    div#space-wrapper
-        div.content
-            h1 Welcome to #{title}
+    div.jumbotron(class="text-center")
 
-            h2 Soon to come: 
+        h2 Welcome to #{title}
 
-            ul.news
-                li a mode to set up decks for UX card sorting
-                li saving results
-                li analysis of results
+        p Login or Register with:
+
+        div#login-toolbar.btn-toolbar(role="toolbar")
+            a.btn(href="login" class="btn-default")
+                span.glyphicon(class="glyphicon-user" aria-hidden="true") 
+                |  Local Login
+            a.btn(href="/signup" class="btn-default")
+                span.glyphicon(class="glyphicon-user" aria-hidden="true")
+                |  Local Signup

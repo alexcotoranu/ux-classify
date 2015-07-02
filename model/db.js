@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var bcrypt = require('bcrypt-nodejs');
 Schema = mongoose.Schema;
 mongoose.connect('mongodb://localhost/uxclassifydb');
 
@@ -79,3 +80,52 @@ var projectSchema = new mongoose.Schema({
     dateCreated: { type: Date, default: Date.now },
 });
 mongoose.model('Project', projectSchema);
+
+// -------------------------------------------------------------------------------- USERS
+
+var userSchema = new mongoose.Schema({
+    
+    local: {
+        username: String,
+        password: String,
+        email: String
+    },
+    facebook: {
+        id: String,
+        token: String,
+        email: String,
+        name: String
+    },
+    twitter: {
+        id: String,
+        token: String,
+        displ: String,
+        user: String
+    },
+    google: {
+        id: String,
+        token: String,
+        email: String,
+        name: String
+    }
+
+});
+
+
+// methods ======================
+// generating a hash
+userSchema.methods.generateHash = function(password) {
+    return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
+};
+
+// checking if password is valid
+userSchema.methods.validPassword = function(password) {
+    return bcrypt.compareSync(password, this.local.password);
+};
+
+// console.log(userSchema.methods);
+
+mongoose.model('User', userSchema);
+
+// // create the model for users and expose it to our app
+// module.exports = mongoose.model('User', userSchema);

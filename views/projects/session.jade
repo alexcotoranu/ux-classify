@@ -4,11 +4,16 @@ block script
     script(type="text/javascript" src="../../../javascripts/helpers.js")
     script(type="text/javascript" src="../../../javascripts/ajax-helpers.js")
     script(type="text/javascript" src="../../../javascripts/interactions.js")
+
+block header
+    span#user-email #{user.local.email}
+    a#logout-button.btn(href="/logout" class="btn-default btn-sm") Logout
         
 block content
     header#top-header
         h2 #{title}
-            div#save-btn save
+            input#participant-input(type='text' placeholder='e.g. John Smith')
+            div#save-btn.session save
 
     div#page-wrapper
         div#flex-wrapper

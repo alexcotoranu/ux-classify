@@ -1,11 +1,23 @@
 doctype html
 html
-  head
-    title= title
-    script(type="text/javascript" src="/javascripts/jquery-2.1.4.min.js")
-    block script
-    link(rel='stylesheet', href='/stylesheets/style.css')
-  body
-    block content
+    head
+        title= title
+        script(type="text/javascript" src="/javascripts/jquery-2.1.4.min.js")
+        block script
+        link(rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css") 
+        link(rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css")
+        link(rel='stylesheet', href='/stylesheets/style.css')
 
-    div#modal
+    body
+        nav#app-navbar.navbar(class="navbar-inverse navbar-fixed-top")
+            div#app-header.navbar-header
+                a#app-home.navbar-brand(href="#") 
+                    span#app-name UX-Classify
+            div.navbar-collapse(class="collapse")
+                div.navbar-right
+                    block header
+
+        div.container
+            block content
+
+        div#modal
