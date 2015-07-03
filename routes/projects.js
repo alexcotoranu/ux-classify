@@ -344,4 +344,17 @@ function isLoggedIn(req, res, next) {
     res.redirect('/');
 }
 
+// route middleware to make sure a user is logged in as an admin
+function isAdmin(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isAdmin)
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
+
 module.exports = router;

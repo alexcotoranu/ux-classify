@@ -42,7 +42,12 @@ a {
   margin-right: 10px;
 }
 
-#logout-button {
+#app-navbar .navbar-right .btn {
+  margin-right:10px;
+}
+
+
+#app-navbar .navbar-right .btn:last-child {
   margin-right:30px;
 }
 

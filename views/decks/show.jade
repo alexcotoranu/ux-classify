@@ -1,29 +1,33 @@
-div#flex-wrapper
-    div#left-content
-        h1 Available Cards
-        div#all-cards.space
-            -each card, i in cards
-                div.card(id="#{card._id}" draggable="true")
-                    div.word #{card.word}
-                    div.example #{card.example}
-                    div.footer
-                        div.option
-                            form(action='/cards/#{card._id}/edit',method='post',enctype='application/x-wwww-form-urlencoded')
-                                input(type='hidden',value='DELETE',name='_method')
-                                button(type='submit') Delete
-                        div.option 
-                            a(href='/cards/#{card._id}/edit') Edit
-                        div.option
-                            a(href='/cards/#{card._id}') Show
-    div#right-sidebar
-        div.deck(id="#{deck._id}")
-            h1 #{deck.name}
-            //- h3 #{deck.dateCreated}
-            div#save-btn.save-deck save
-            div#card-in-deck
-                -each cardindeck, i in cardsindeck
-                    div.card(id="#{cardindeck._id}" draggable="true")
-                        div.word #{cardindeck.word}
-                        div.example #{cardindeck.example}
+extends ../layout
+
+block content
+
+    div#flex-wrapper
+        div#left-content
+            h1 Available Cards
+            div#all-cards.space
+                -each card, i in cards
+                    div.card(id="#{card._id}" draggable="true")
+                        div.word #{card.word}
+                        div.example #{card.example}
+                        div.footer
+                            div.option
+                                form(action='/cards/#{card._id}/edit',method='post',enctype='application/x-wwww-form-urlencoded')
+                                    input(type='hidden',value='DELETE',name='_method')
+                                    button(type='submit') Delete
+                            div.option 
+                                a(href='/cards/#{card._id}/edit') Edit
+                            div.option
+                                a(href='/cards/#{card._id}') Show
+        div#right-sidebar
+            div.deck(id="#{deck._id}")
+                h1 #{deck.name}
+                //- h3 #{deck.dateCreated}
+                div#save-btn.save-deck save
+                div#card-in-deck
+                    -each cardindeck, i in cardsindeck
+                        div.card(id="#{cardindeck._id}" draggable="true")
+                            div.word #{cardindeck.word}
+                            div.example #{cardindeck.example}
 
                     

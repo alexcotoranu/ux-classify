@@ -5,18 +5,16 @@ block script
     script(type="text/javascript" src="../javascripts/interactions.js")
 
 block content
-  
-    header#top-header
-        h2 #{title}
-            div#new-btn.new-deck Create New
-            input.deck-name
 
-    div#page-wrapper
-        h1 Decks
+    h1 Decks
 
-        div.decks      
-                
-            -each deck, i in decks
+    form(action="/decks" method="post")
+        input#name(type="text" name="name")
+        button.btn Create New
+
+    div.decks     
+            
+        -each deck, i in decks
+            a(href="/decks/#{deck._id}")
                 div.deck(id="#{deck._id}")
-                    span.name #{deck.name}
-                    //- div.date #{project.dateCreated}
+                    span.name #{deck.name}                   

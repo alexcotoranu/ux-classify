@@ -18,7 +18,7 @@ router.use(methodOverride(function(req, res){
 router.route('/:id/get')
     //::::::::::::::::::::::GET OBJECT ID OF GROUP
     //GET group id
-    .get(function(req, res, next) {
+    .get(isLoggedIn, function(req, res, next) {
         mongoose.model('Group').findOne({id:req.params['id']}, function (err, group) {
               if (err) {
                   return console.error(err);
@@ -37,7 +37,7 @@ router.route('/:id/get')
 router.route('/new')
     //::::::::::::::::::::::CREATE NEW GROUP
     //POST a new group
-    .post(function(req, res) {
+    .post(isLoggedIn, function(req, res) {
         // var id = req.body.id;
         
         //call the create function for our database
@@ -69,7 +69,7 @@ router.route('/new')
 
 //::::::::::::::::::::::SAVE THE GROUPS
 router.route('/save')
-  .post(function(req, res) {
+  .post(isLoggedIn, function(req, res) {
     // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
     console.log(req.body);
 
@@ -118,5 +118,18 @@ router.route('/save')
       });
     });
   });
+
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
 
 module.exports = router;

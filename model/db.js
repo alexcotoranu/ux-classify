@@ -75,6 +75,7 @@ mongoose.model('Project', projectSchema);
 
 var userSchema = new mongoose.Schema({
     
+    isAdmin: Boolean,
     local: {
         username: String,
         password: String,

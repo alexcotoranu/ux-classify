@@ -17,7 +17,7 @@ router.use(methodOverride(function(req, res){
 
 //::::::::::::::::::::::VIEW ALL DECKS
 router.route('/')
-    .get(function(req, res, next) {
+    .get(isAdmin, function(req, res, next) {
         mongoose.model('Deck').find({}).sort({dateCreated: -1}).exec(function (err, decks) {
               if (err) {
                   return console.error(err);
@@ -26,7 +26,8 @@ router.route('/')
                     html: function(){
                         res.render('decks/index', {
                             title: 'UX-Classify',
-                            "decks" : decks
+                            decks : decks,
+                            user : req.user
                         });
                     },
                     json: function(){
@@ -37,7 +38,7 @@ router.route('/')
         });
     })//::::::::::::::::::::::CREATE A NEW DECK
     //POST a new deck
-    .post(function(req, res) {
+    .post(isAdmin, function(req, res) {
         // Get values from POST request
         var name = req.body.name;
         var cards = JSON.stringify(req.body.cards);
@@ -67,7 +68,7 @@ router.route('/')
 
 //::::::::::::::::::::::SHOW DECK
 router.route('/:id')
-    .get(function(req, res, next) {
+    .get(isAdmin, function(req, res, next) {
         mongoose.model('Deck').findById(req.params['id'], function (err, deck) {
             if (err) {
                 return console.error("Deck: " + err);
@@ -83,9 +84,10 @@ router.route('/:id')
                                 res.format({
                                     html: function(){
                                         res.render('decks/show', {
-                                            "deck" : deck,
-                                            "cards" : cards,
-                                            "cardsindeck" : cardsindeck
+                                            deck : deck,
+                                            cards : cards,
+                                            cardsindeck : cardsindeck,
+                                            user : req.user
                                         });
                                     },
                                     json: function(){
@@ -100,7 +102,7 @@ router.route('/:id')
         });
     })
     //::::::::::::::::::::::UPDATE DECK
-    .post(function(req, res) {
+    .post(isAdmin, function(req, res) {
         // Get values from POST request
         var cards = JSON.stringify(req.body.cards);
         var jCards = JSON.parse(req.body.cards);
@@ -129,5 +131,18 @@ router.route('/:id')
             });
         });
     });
+
+// route middleware to make sure a user is logged in as an admin
+function isAdmin(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isAdmin)
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
 
 module.exports = router;
