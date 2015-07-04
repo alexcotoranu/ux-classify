@@ -22,7 +22,7 @@ router.route('/save')
         // Get values from POST request. These can be done through forms or REST calls. These rely on the "name" attributes for forms
         var word = req.body.word;
         var example = req.body.example;
-        var dateCreated = req.body.dateCreated;
+        var dateCreated = new Date();
         var isCustom = req.body.isCustom;
         //call the create function for our database
         mongoose.model('Card').create({
@@ -43,6 +43,7 @@ router.route('/save')
                         // res.location("cards");
                         // And forward to success page
                         // res.redirect("/cards");
+                        res.send(card);
                     },
                     //JSON response will show the newly created card
                     json: function(){
@@ -285,7 +286,7 @@ router.delete('/:id/edit', function (req, res){
                                    item : card
                                });
                          }
-                      });
+                    });
                 }
             });
         }

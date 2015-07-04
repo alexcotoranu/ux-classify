@@ -2,11 +2,14 @@ doctype html
 html
     head
         title= title
+        meta(charset="utf-8")
+        meta(name="viewport" content="width=device-width, initial-scale=1")
         script(type="text/javascript" src="/javascripts/jquery-2.1.4.min.js")
         block script
         script(type="text/javascript" src="/javascripts/jquery-ui.min.js")
         script(type="text/javascript" src="/javascripts/jquery.ui.touch-punch.min.js")
         link(rel="stylesheet" href="/lib/bootstrap/css/bootstrap.min.css") 
+        script(type="text/javascript" src="/javascripts/bootstrap.min.js")
         link(rel="stylesheet" href="/lib/font-awesome/css/font-awesome.min.css")
         link(rel='stylesheet', href='/stylesheets/style.css')
 
@@ -26,9 +29,12 @@ html
                             a#decks-button.btn(href="/decks" class="btn-sm")
                                 span.glyphicon(class="glyphicon-cog" aria-hidden="true")
                                 |  Decks
+                            a#decks-button.btn(href="/projects" class="btn-sm")
+                                span.glyphicon(class="glyphicon-stats" aria-hidden="true")
+                                |  Sessions
                     block header
 
-        div.container
+        div#content-container.container
             block content
 
-        div#modal
+        block modal

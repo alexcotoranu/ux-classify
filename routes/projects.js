@@ -29,8 +29,8 @@ router.route('/')
                   res.format({
                     html: function(){
                         res.render('projects/index', {
-                            title: 'UX-Classify',
-                            "projects" : projects
+                            projects : projects,
+                            user : req.user
                         });
                     },
                     json: function(){
@@ -41,7 +41,7 @@ router.route('/')
         });
     })//::::::::::::::::::::::CREATE A NEW PROJECT
     //POST a new project
-    .post(isLoggedIn, function(req, res) {
+    .post(isAdmin, function(req, res) {
         // Get values from POST request
         var name = req.body.name;
         var date = new Date();
@@ -74,7 +74,7 @@ router.route('/:id')
             if (err) {
                 return console.error(err);
             } else {
-                mongoose.model('Experiment').find({'project':req.params['project']}).sort({dateCreated: -1}).exec(function (err, experiments) {
+                mongoose.model('Experiment').find({'project':req.params['id']}).sort({dateCreated: -1}).exec(function (err, experiments) {
                     if (err) {
                         return console.error(err);
                     } else {
@@ -85,10 +85,10 @@ router.route('/:id')
                                 res.format({
                                     html: function(){
                                         res.render('projects/show', {
-                                            title: 'UX-Classify',
-                                            "project" : project,
-                                            "experiments" : experiments,
-                                            "decks" : decks
+                                            project : project,
+                                            experiments : experiments,
+                                            decks : decks,
+                                            user : req.user
                                         });
                                     },
                                     json: function(){
@@ -103,9 +103,10 @@ router.route('/:id')
         });
     });
 
+
 //::::::::::::::::::::::SHOW EXPERIMENT
 router.route('/:id/:exid/')
-    .get(isLoggedIn, function(req, res, next) {
+    .get(isAdmin, function(req, res, next) {
         mongoose.model('Project').findById(req.params['id'], function (err, project) {
             if (err) {
                 console.log(req);
@@ -120,26 +121,47 @@ router.route('/:id/:exid/')
                             if (err) {
                                 return console.error("Deck: " + err);
                             } else {
-                                mongoose.model('Session').find({'experiment': req.params['exid']}, function (err, sessions) {
+                                mongoose.model('Session').find({'experiment': req.params['exid']}, function (err, experimentsessions) {
                                     if (err) {
-                                        return console.error("Sessions: " + err);
+                                        return console.error("Session: " + err);
                                     } else {
+                                        var sessionArray = {};
+
+                                        for (var i in experimentsessions) {
+                                            mongoose.model('User').findById(experimentsessions[i].participant, function (err, participant) {
+                                                if (err) {
+                                                    return console.error("Participant: " + err);
+                                                } else {
+                                                    // console.log(participant.local.email);
+                                                    var entry = {
+                                                        _id: experimentsessions[i]._id,
+                                                        participant: participant.local.email
+                                                    };
+                                                    // console.log(entry);
+                                                    sessionArray.push(entry);
+                                                }
+
+                                            });
+                                        }
+
+                                        console.log(sessionArray);
+                                       
                                         res.format({
                                             html: function(){
                                                 res.render('projects/experiment', {
-                                                    title: 'UX-Classify',
-                                                    "project" : project,
-                                                    "experiment" : experiment,
-                                                    "deck" : deck,
-                                                    "sessions" : sessions
+                                                    project : project,
+                                                    experiment : experiment,
+                                                    deck : deck,
+                                                    sessions : sessionArray,
+                                                    user : req.user
                                                 });
                                             },
                                             json: function(){
                                                 res.json(project, experiment, deck, sessions);
                                             }
-                                        });
+                                        });     
                                     }
-                                });        
+                                });
                             }
                         });
                     }
@@ -147,7 +169,7 @@ router.route('/:id/:exid/')
             }
         });
     })
-    //::::::::::::::::::::::CREATE A NEW EXPERIMENT
+    //:::::::::::::::::::::: CREATE A NEW EXPERIMENT
     //POST a new experient
     .post(isLoggedIn, function(req, res) {
         // Get values from POST request
@@ -232,7 +254,7 @@ router.route('/:id/:exid/new')
             }
         });
     })
-    //::::::::::::::::::::::CREATE NEW SESSION
+    //::::::::::::::::::::::SAVE SESSION
     .post(isLoggedIn, function(req, res, next) {
         var experiment = req.params['exid'];
         var participant = req.user._id;
@@ -264,11 +286,46 @@ router.route('/:id/:exid/new')
         });
     });
 
+// router.route('/:id/:exid/:participants')
+//     //::::::::::::::::::::::VIEW ALL OF THE PARTICIPANTS
+//     //GET all sessions for that participant
+//     .get(isLoggedIn, function(req, res, next) {
+//         mongoose.model('Experiment').findById(req.params['exid'], function (err, experiment) {
+//             if (err) {
+//                 return console.error("Experiment: " + err);
+//             } else {
+//                 mongoose.model('Session').find({'experiment': req.params['exid']}, function (err, sessions) {
+//                     if (err) {
+//                         return console.error("Sessions: " + err);
+//                     } else {
+//                         mongoose.model('Users').find({'_id' : {'$in':sessions.participants}}, function (err, participants) {
+//                             if (err) {
+//                                 return console.error("Participants: " + err);
+//                             } else {
+//                                 res.format({
+//                                     html: function(){
+//                                         res.render('projects/participants', {
+//                                               experiment : experiment,
+//                                               sessions : sessions,
+//                                               participants : participants,
+//                                               user : req.user
+//                                         });
+//                                     },
+//                                     json: function(){
+//                                         res.json(experiment,cards);
+//                                     }
+//                                 });
+//                             }     
+//                         });
+//                     }     
+//                 });
+//             }
+//         });
+//     });
 
-
-// router.route('/:id/:exid/:sessionid')
-//     //::::::::::::::::::::::RUN NEW SESSION
-//     //GET all cards in deck
+// router.route('/:id/:exid/:participantid/:sessionid')
+//     //::::::::::::::::::::::ANALYZE SESSION
+//     //GET the session
 //     .get(isLoggedIn, function(req, res, next) {
 //         mongoose.model('Experiment').findById(req.params['exid'], function (err, experiment) {
 //             if (err) {
@@ -300,7 +357,9 @@ router.route('/:id/:exid/new')
 //                 });
 //             }
 //         });
-//     })
+//     });
+
+
 //     //::::::::::::::::::::::SAVE SESSION
 //     //POST a session update
 //     .post(isLoggedIn, function(req, res, next) {

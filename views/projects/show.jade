@@ -10,24 +10,28 @@ block content
         h1 #{project.name} Experiments
 
         div#experiment-wrapper
-            div#new-form
-                label(for="experiment-name") Name:
-                input#experiment-name(placeholder="e.g. experiment 1")
-                label(for="experiment-category") Category:
-                input#experiment-category(placeholder="e.g. open or closed")
-                label(for="experiment-deck") Deck:
-                select#experiment-deck
-                    -each deck, i in decks
-                        option(value="#{deck._id}") #{deck.name}
-                div.btn(class="new-experiment") Create New
-
-
-            div.experiments      
-                    
-                -each experiment, i in experiments
-                    -console.log(experiment.name);
-                    a(href="/projects/#{project._id}/#{experiment._id}/new")
-                        div.experiment(id="#{experiment._id}")
-                            span.name #{experiment.name}
+            if user.isAdmin
+                div#new-form
+                    label(for="experiment-name") Name:
+                    input#experiment-name(placeholder="e.g. experiment 1")
+                    label(for="experiment-category") Category:
+                    input#experiment-category(placeholder="e.g. open or closed")
+                    label(for="experiment-deck") Deck:
+                    select#experiment-deck
+                        -each deck, i in decks
+                            option(value="#{deck._id}") #{deck.name}
+                    div.btn(class="new-experiment") Create New
+                div.experiments
+                    each experiment, i in experiments
+                        -console.log(experiment.name);
+                            a(href="/projects/#{project._id}/#{experiment._id}")
+                                div.experiment(id="#{experiment._id}")
+                                    span.name #{experiment.name}
+            if !user.isAdmin
+                div.experiments
+                    each experiment, i in experiments
+                        a(href="/projects/#{project._id}/#{experiment._id}/new")
+                            div.experiment(id="#{experiment._id}")
+                                span.name #{experiment.name}
 
 

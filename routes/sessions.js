@@ -34,11 +34,11 @@ router.route('/')
                             } else {
                                 res.format({
                                     html: function(){
-                                        res.render('experiments/index', {
-                                            title: 'UX-Classify',
-                                            "projects" : projects,
-                                            "decks" : decks,
-                                            "experiments" : experiments
+                                        res.render('sessions/index', {
+                                            projects : projects,
+                                            decks : decks,
+                                            experiments : experiments,
+                                            sessions : sessions
                                         });
                                     },
                                     json: function(){

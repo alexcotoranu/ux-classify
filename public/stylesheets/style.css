@@ -88,19 +88,27 @@ a {
   flex-direction:row;
 }*/
 
-#session-wrapper {
+#session-wrapper,
+#deck-wrapper {
   position: absolute;
   top: 50px;
   left: 0px;
   width: 100%;
 }
 
-#session-actions {
+#session-actions,
+#deck-actions {
   padding:10px 15px;
   background-color: #3F474A;
 }
 
-#session-actions h2 {
+#session-actions .btn ,
+#deck-actions .btn {
+    margin-left: 10px;
+}
+
+#session-actions h2,
+#deck-actions h2 {
   margin:0px;
   display: inline-block;
   color:#AEAEAE;
@@ -141,7 +149,15 @@ a {
   background-color:#728993;
 }
 
-#right-sidebar.over {
+#deck-session-sidebar,
+#deck-management-sidebar {
+  min-height:100vh;
+  width:100%;
+  transition:0.5s all;
+}
+
+#deck-session-sidebar.over,
+#deck-management-sidebar.over {
   background-color:#30444D;
 }
 

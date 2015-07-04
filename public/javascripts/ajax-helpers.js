@@ -37,44 +37,102 @@ function createDeck(name,cardArray,dateCreated){
 }
 
 function saveDeck(id){
-  console.log("Group " + id + " is being saved!");
-  var cardArray = [];
-  //select only cards directly inside the group 
-  var selectedCards = '.card.selected';
-  
-  $(selectedCards).each(function(){
-    var cardID = $(this).attr('id');
-    // append it to the list of cards like so: cardsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
-    cardArray.push(cardID);
-    // console.log(cardsInGroup);
-  });
+    console.log("Group " + id + " is being saved!");
+    var cardArray = [];
+    //select only cards directly inside the group 
+    var selectedCards = '#deck-management-sidebar .card';
+    $(selectedCards).each(function(){
+        var cardID = $(this).attr('id');
+        console.log("Adding card: "+ cardID);
+        // append it to the list of cards like so: cardsInGroup =[{id:"153A5-1415G"},{id:"4623W-6547Y"}];
+        cardArray.push(cardID);
+        // console.log(cardsInGroup);
+    });
 
-  var data = {
-    cards: JSON.stringify(cardArray),
-  };
+    var data = {
+        cards: JSON.stringify(cardArray),
+    };
 
-  console.log(data);
+    console.log(data);
 
-  //save groups
-  $.ajax({
-    url: '/decks/'+id,
-    type: 'POST',
-    data: data,
-    success:function(data, textStatus, jqXHR) 
-    {
-        //data: return data from server
-        console.log(data);
-        console.log("Deck was successfully POSTED.");
-    },
-    error: function(jqXHR, textStatus, errorThrown) 
-    {
-        //if fails 
-        console.log(errorThrown);     
-    }
-  });
+    //save groups
+    $.ajax({
+        url: '/decks/'+id,
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR) 
+        {
+            //data: return data from server
+            console.log(data);
+            console.log("Deck was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            //if fails 
+            console.log(errorThrown);     
+        }
+    });
 }
 
+function createCard(word,example,isCustom){
+    console.log("Cards are being saved");
+  
+    if (!isCustom) {
+        isCustom = false;
+    }
 
+    var data = {
+        word: word,
+        example: example,
+        isCustom: isCustom
+    };
+
+    console.log(data);
+
+    //save groups
+    var post = $.ajax({
+        url: '/cards/save',
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR) 
+        {
+            //data: return data from server
+            console.log(data);
+            console.log("Project was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+            //if fails
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        console.log(res);
+        var card = JSON.parse(res);
+        console.log(card);
+        var newCard = '<div id="'+card._id+'" draggable="true" class="card">' +
+        '<div class="word">'+card.word+'</div>' +
+        '<div class="example">'+card.example+'</div>' +
+        '<div class="footer">' +
+            '<div class="option">' +
+                '<form action="/cards/'+card._id+'/edit" method="post" enctype="application/x-wwww-form-urlencoded">' +
+                    '<input type="hidden" value="DELETE" name="_method">' +
+                    '<button type="submit">Delete</button>' +
+                '</form>' +
+            '</div>' +
+            '<div class="option">' +
+                '<a href="/cards/'+card._id+'/edit">Edit</a>' +
+            '</div>' +
+            '<div class="option">' +
+                '<a href="/cards/'+card._id+'">Show</a>' +
+            '</div>' +
+        '</div>';
+        console.log(newCard);
+        $('#all-cards').prepend(newCard);
+        $('#modal').modal('toggle');
+    });
+}
 
 function saveCard(word,example,dateCreated,isCustom){
   console.log("Cards are being saved");
@@ -108,32 +166,37 @@ function saveCard(word,example,dateCreated,isCustom){
 }
 
 function saveSession(sessionId, groupArray){
-  console.log("Session is being saved");
+    console.log("Session is being saved");
   
-  var data = {
-    groups: JSON.stringify(groupArray),
-    sessionid: sessionId 
-  };
+    var data = {
+        groups: JSON.stringify(groupArray),
+        sessionid: sessionId 
+    };
 
-  console.log(data);
+    console.log(data);
 
-  //save groups
-  $.ajax({
-    url: window.location.pathname,
-    type: 'POST',
-    data: data,
-    success:function(data, textStatus, jqXHR) 
-    {
-        //data: return data from server
-        console.log(data);
-        console.log("Session was successfully POSTED.");
-    },
-    error: function(jqXHR, textStatus, errorThrown) 
-    {
-        //if fails 
-        console.log(errorThrown);
-    }
-  });
+    //save groups
+    var post = $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR) 
+        {
+            //data: return data from server
+            console.log(data);
+            console.log("Session was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            //if fails 
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        var thankYou = '<div class="well"><h1>Thank you for participating!</h1></div>';
+        $('#content-container').html(thankYou);
+    });
 }
 
 // function createSession(project, experiment){
@@ -319,7 +382,11 @@ function createGroup(target, source){
     var oddOrEven = target.parent().hasClass('odd') ? 'even': 'odd';
 
     //combined content
-    var groupContent = target[0].outerHTML + source[0].outerHTML;
+    if (targetId != sourceId) {
+      var groupContent = target[0].outerHTML + source[0].outerHTML;
+    } else {
+      var groupContent = target[0].outerHTML;
+    }
     console.log(groupContent);
 
     // save groups

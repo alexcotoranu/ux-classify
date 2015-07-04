@@ -29,7 +29,7 @@ $(document).ready(function() {
         createExperiment(name,project,category,deck);
     });
 
-    //::::::::: DECKS
+    //::::::::: DECKS & NEW CARDS
     // "create new" button logic
     $('#new-btn.new-deck').on("click", function(){
         // console.log("Create New was clicked");
@@ -43,17 +43,26 @@ $(document).ready(function() {
         $('#page-wrapper').load('/decks/'+deckId);
     });
 
+    // selecting cards for deck
+    $(document).on('click','#all-cards .card', function () {
+        $(this).toggleClass('selected');
+    });
+    // save deck deck
+    $(document).on('click','#save-deck', function () {
+        var id = $(this).attr('data-deck-id');
+        console.log(id);
+        saveDeck(id);
+    });
+
+    //add new card (during deck management)
+    $(document).on('click', '#submit-card', function () {
+        var word = $('#inputWord').val();
+        var example = $('#inputExample').val();
+        createCard(word,example);
+    });
+
     //::::::::: CARDS & GROUPS
-
-    // "save" button logic
-    // $('#save-btn').on("click", function(){
-    //     // console.log("Save was clicked");
-    //     $('.group').each(function() {
-    //         var id = $(this).attr('id');
-    //         saveGroup(id);
-    //     });
-    // });
-
+    // "save session" button logic
     $('#save-session').on("click", function(){
         // console.log("Save was clicked");
         var groups = [];
@@ -63,7 +72,7 @@ $(document).ready(function() {
             groups.push(id);
         });
         var sessionId = $(this).attr('data-session-id');
-        saveSession(sessionId,groups); 
+        saveSession(sessionId,groups);
     });
 
     // group name change logic
@@ -72,17 +81,9 @@ $(document).ready(function() {
         saveGroup(id);
     });
 
-    // selecting cards for deck
-    $(document).on('click','#all-cards .card', function () {
-        $(this).toggleClass('selected');
-    });
+    
 
-    // save deck deck
-    $(document).on('click','#save-btn.save-deck', function () {
-        var id = $(this).parent('.deck').attr('id');
-        console.log(id);
-        saveDeck(id);
-    });
+    
 });
 
 // drag and drop functionality
@@ -91,7 +92,8 @@ $(document).ready(function(){
     $.event.props.push('dataTransfer');
 
     var sortSpace = $('#sorting-space');
-    var deck = $('#right-sidebar');
+    var deck = $('#deck-session-sidebar');
+    var managedDeck = $('#deck-management-sidebar');
     var source = null;
 
     function handleDragStart(e) {
@@ -217,7 +219,7 @@ $(document).ready(function(){
                 }
             } else {
                 // if the target is the sidebar && the source is not already in the sidebar
-                if ( target.parent().attr('id') == ('right-sidebar') && source.parent().attr('id') != 'right-sidebar' ){
+                if ( target.parent().attr('id') == ('deck-session-sidebar') && source.parent().attr('id') != 'deck-session-sidebar' ){
                     console.log('The source is moving into the sidebar from the sorting area.');
                     // first clean up extra classes
                     source.removeClass('moving');
@@ -233,6 +235,20 @@ $(document).ready(function(){
                     source.addClass('sortable');
                     // then add the source to the target (group)
                     target.append(source);
+                } else if (target.attr('id') == ('deck-management-sidebar')) {
+                    console.log("Target is deck-management-sidebar");
+                    console.log(source);
+                    // if ( !$('#deck-management-sidebar #'+source.attr('id')) ) {
+                        console.log('Card is not already in deck, so adding it.');
+                        // first clean up extra classes
+                        source.removeClass('moving');
+                        target.removeClass('over');
+                        // then add the source to the target (deck-management-sidebar)
+                        target.append(source);
+                    // } else {
+                    //     console.log("Nothing should happen");
+                    //     target.removeClass('over');
+                    // }
                 } else {
                     console.log("Swapping cards.");
                     var targetHTML = target[0].innerHTML;
@@ -240,6 +256,14 @@ $(document).ready(function(){
                     source[0].innerHTML = targetHTML;
                     target[0].innerHTML = sourceHTML;
                 }
+            }
+        } else {
+            if (target.hasClass('sortable') && source.hasClass('sortable')) { //redundant since it's the same card, but it shouldn't hurt
+                // first clean up extra classes
+                source.removeClass('moving');
+                target.removeClass('over');
+                // then replace the target with new group which contains both the target and source
+                createGroup(target,source);
             }
         }
 
@@ -273,5 +297,10 @@ $(document).ready(function(){
     deck.on('dragover', handleDragOver);
     deck.on('dragleave', handleDragLeave);
     deck.on('drop', handleDrop);
+
+    managedDeck.on('dragenter', handleDragEnter);
+    managedDeck.on('dragover', handleDragOver);
+    managedDeck.on('dragleave', handleDragLeave);
+    managedDeck.on('drop', handleDrop);
 
 });

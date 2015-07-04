@@ -77,7 +77,7 @@ router.route('/:id')
                     if (err) {
                         return console.error("Cards In Deck: " + err);
                     } else {
-                        mongoose.model('Card').find({}, function (err, cards) {
+                        mongoose.model('Card').find({'_id': {'$nin':deck.cards}}).sort({dateCreated: -1}).exec(function (err, cardsnotindeck) {
                             if (err) {
                                 return console.error("Cards: " + err);
                             } else {
@@ -85,13 +85,13 @@ router.route('/:id')
                                     html: function(){
                                         res.render('decks/show', {
                                             deck : deck,
-                                            cards : cards,
+                                            cards : cardsnotindeck,
                                             cardsindeck : cardsindeck,
                                             user : req.user
                                         });
                                     },
                                     json: function(){
-                                        res.json(deck, cardsindeck, cards);
+                                        res.json(deck, cardsindeck, cardsnotindeck, req.user);
                                     }
                                 });
                             }
