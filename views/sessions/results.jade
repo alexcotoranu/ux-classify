@@ -1,0 +1,25 @@
+extends ../layout
+
+block script
+    script(type="text/javascript" src="../../javascripts/ajax-helpers.js")
+    script(type="text/javascript" src="../../javascripts/interactions.js")
+
+block content
+
+    div#results-wrapper
+
+        div#sessions-wrapper.well     
+            table.table(class="table-hover")
+                thead
+                    tr
+                        th group
+                        th cards
+                tbody
+                    each group, i in groups
+                        tr
+                            td
+                                div(id="#{group._id}")
+                                    span.name #{group.name}
+                            td
+                                each card, i in group.cards
+                                    div #{card.word}

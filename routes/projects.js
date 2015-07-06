@@ -109,8 +109,8 @@ router.route('/:id/:exid/')
     .get(isAdmin, function(req, res, next) {
         mongoose.model('Project').findById(req.params['id'], function (err, project) {
             if (err) {
-                console.log(req);
-                console.log(req.params);
+                // console.log(req);
+                // console.log(req.params);
                 return console.error("Project: " + err);
             } else {
                 mongoose.model('Experiment').findById(req.params['exid'], function (err, experiment) {
@@ -125,24 +125,6 @@ router.route('/:id/:exid/')
                                     if (err) {
                                         return console.error("Session: " + err);
                                     } else {
-                                        
-
-                                        // for (var i in experimentsessions) {
-                                        //     mongoose.model('User').findById(experimentsessions[i].participant, function (err, participant) {
-                                        //         if (err) {
-                                        //             return console.error("Participant: " + err);
-                                        //         } else {
-                                        //             // console.log(participant.local.email);
-                                        //             var entry = {
-                                        //                 _id: experimentsessions[i]._id,
-                                        //                 participant: participant.local.email
-                                        //             };
-                                        //             // console.log(entry);
-                                        //             sessionArray.push(entry);
-                                        //         }
-
-                                        //     });
-                                        // }
                                         res.format({
                                             html: function(){
                                                 res.render('projects/experiment', {
@@ -210,8 +192,8 @@ router.route('/:id/:exid/new')
         var participant = req.user._id;
         var dateCreated = new Date();
         mongoose.model('Session').create({
+            _participant : participant,
             experiment : experiment,
-            participant : participant,
             dateCreated : dateCreated
         }, function (err, session) {
             if (err) {
@@ -232,10 +214,10 @@ router.route('/:id/:exid/new')
                                         res.format({
                                             html: function(){
                                                 res.render('projects/session', {
-                                                    "session" : session,
-                                                    "experiment" : experiment,
-                                                    "cards" : cards,
-                                                    "user" : req.user
+                                                    session : session,
+                                                    experiment : experiment,
+                                                    cards : cards,
+                                                    user : req.user
                                                 });
                                             },
                                             json: function(){
@@ -319,43 +301,6 @@ router.route('/:id/:exid/new')
 //             }
 //         });
 //     });
-
-// router.route('/:id/:exid/:participantid/:sessionid')
-//     //::::::::::::::::::::::ANALYZE SESSION
-//     //GET the session
-//     .get(isLoggedIn, function(req, res, next) {
-//         mongoose.model('Experiment').findById(req.params['exid'], function (err, experiment) {
-//             if (err) {
-//                 return console.error("Experiment: " + err);
-//             } else {
-//                 mongoose.model('Deck').findById(experiment.deck, function (err, deck) {
-//                     if (err) {
-//                         return console.error("Deck: " + err);
-//                     } else {
-//                         mongoose.model('Card').find({'_id': {'$in':deck.cards}}, function (err, cards) {
-//                             if (err) {
-//                                 return console.error("Cards: " + err);
-//                             } else {
-//                                 res.format({
-//                                     html: function(){
-//                                         res.render('projects/session', {
-//                                               "experiment" : experiment,
-//                                               "cards" : cards,
-//                                               "user" : req.user
-//                                         });
-//                                     },
-//                                     json: function(){
-//                                         res.json(experiment,cards);
-//                                     }
-//                                 });
-//                             }     
-//                         });
-//                     }     
-//                 });
-//             }
-//         });
-//     });
-
 
 //     //::::::::::::::::::::::SAVE SESSION
 //     //POST a session update

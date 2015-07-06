@@ -88,6 +88,14 @@ a {
   flex-direction:row;
 }*/
 
+#sessions-wrapper {
+  background-color:#FFFFFF;
+}
+
+#sessions-wrapper table td {
+  padding-bottom:0px;
+}
+
 #session-wrapper,
 #deck-wrapper {
   position: absolute;
@@ -401,16 +409,18 @@ input.project-name {
 
 .experiment {
   display:inline-block;
-  width:150px;
   height:75px;
+  width:200px;
   background-color:#FEFEFE;
   margin:15px;
   vertical-align: top;
   text-align: center;
-  /*line-height: 75px;*/
-  vertical-align: middle;
+  line-height: 75px;
   border-radius:2px;
   font-size:18px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .experiment:hover {

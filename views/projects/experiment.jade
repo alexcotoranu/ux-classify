@@ -14,13 +14,24 @@ block content
         div Date Created: #{experiment.dateCreated}
         div(id="#{project._id}") Project: #{project.name}
         div(id="#{deck._id}") Deck: #{deck.name}
-        a.btn(href="#{experiment._id}/new") run experiment
+        //- a.btn(href="#{experiment._id}/new") run experiment
 
 
-        div.sessions      
-            
-            each session, i in sessions
-                -console.log(session._participant)
-                a(href="/projects/#{project._id}/#{experiment._id}/#{session._id}")
-                    div.experiment(id="#{session._id}")
-                        span.name #{session._participant}
+        div#sessions-wrapper.well     
+            table.table(class="table-hover")
+                thead
+                    tr
+                        th participant
+                        //- th groups
+                        th date
+                tbody
+                    each session, i in sessions
+                        tr
+                            td
+                                a(href="/sessions/#{session._id}")
+                                    div.session(id="#{session._id}")
+                                        span.name #{session._participant.local.email}
+                            //- td
+                            //-     div #{session.group}
+                            td
+                                p #{session.dateCreated}

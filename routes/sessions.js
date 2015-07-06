@@ -19,7 +19,7 @@ router.use(methodOverride(function(req, res){
 
 //::::::::::::::::::::::VIEW ALL EXPERIMENTS
 router.route('/')
-    .get(function(req, res, next) {
+    .get(isLoggedIn, function(req, res, next) {
         mongoose.model('Experiment').find({}).sort({dateCreated: -1}).exec(function (err, experiments) {
             if (err) {
                 return console.error(err);
@@ -53,7 +53,7 @@ router.route('/')
         });
     })//::::::::::::::::::::::CREATE A NEW EXPERIMENT
     //POST a new project
-    .post(function(req, res) {
+    .post(isLoggedIn, function(req, res) {
         // Get values from POST request
         var name = req.body.name;
         var date = new Date();
@@ -86,30 +86,61 @@ router.route('/')
     });
 
 //::::::::::::::::::::::SHOW EXPERIMENT
+// router.route('/:id')
+//     .get(function(req, res, next) {
+//         mongoose.model('Experiment').findById(req.params['id'], function (err, experiment) {
+//               if (err) {
+//                   return console.error(err);
+//               } else {
+//                   res.format({
+//                     html: function(){
+//                         res.render('experiments/show', {
+//                             "experiment" : experiment
+//                         });
+//                     },
+//                     json: function(){
+//                         res.json(deck);
+//                     }
+//                 });
+//               }     
+//         });
+//     });
+
 router.route('/:id')
-    .get(function(req, res, next) {
-        mongoose.model('Experiment').findById(req.params['id'], function (err, experiment) {
-              if (err) {
-                  return console.error(err);
-              } else {
-                  res.format({
-                    html: function(){
-                        res.render('experiments/show', {
-                            "experiment" : experiment
+    //::::::::::::::::::::::ANALYZE SESSION
+    //GET the session
+    .get(isAdmin, function(req, res, next) {
+        mongoose.model('Session').findById(req.params['id']).populate('_participant').exec(function (err, session) {
+            if (err) {
+                return console.error("Session: " + err);
+            } else {
+                mongoose.model('Group').find({'_id':{'$in':session.groups}}).populate('cards').exec(function (err, groups) {
+                    if (err) {
+                        return console.error("Group: " + err);
+                    } else {
+                        console.log(groups);
+                        res.format({
+                            html: function(){
+                                res.render('sessions/results', {
+                                      session : session,
+                                      groups : groups,
+                                      user : req.user
+                                });
+                            },
+                            json: function(){
+                                res.json(experiment,cards);
+                            }
                         });
-                    },
-                    json: function(){
-                        res.json(deck);
-                    }
+                    }     
                 });
-              }     
+            }
         });
     });
 
 
 //::::::::::::::::::::::SAVE THE SESSION
 router.route('/save')
-  .post(function(req, res) {
+  .post(isLoggedIn, function(req, res) {
         var experiment = req.body.experiment;
         var participant = req.body.participant;
         var groups = JSON.parse(req.body.groups);
@@ -136,5 +167,32 @@ router.route('/save')
               }
         })
     });
+
+
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
+
+// route middleware to make sure a user is logged in as an admin
+function isAdmin(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated() && req.user.isAdmin)
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
 
 module.exports = router;
