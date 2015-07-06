@@ -407,7 +407,8 @@ input.project-name {
   margin:15px;
   vertical-align: top;
   text-align: center;
-  line-height: 75px;
+  /*line-height: 75px;*/
+  vertical-align: middle;
   border-radius:2px;
   font-size:18px;
 }

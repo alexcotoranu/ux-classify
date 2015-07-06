@@ -19,8 +19,8 @@ block content
 
         div.sessions      
             
-            -each session, i in sessions
-                -console.log(session.participant);
+            each session, i in sessions
+                -console.log(session._participant)
                 a(href="/projects/#{project._id}/#{experiment._id}/#{session._id}")
                     div.experiment(id="#{session._id}")
-                        span.name #{session.participant}
+                        span.name #{session._participant}

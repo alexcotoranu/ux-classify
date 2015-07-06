@@ -121,38 +121,35 @@ router.route('/:id/:exid/')
                             if (err) {
                                 return console.error("Deck: " + err);
                             } else {
-                                mongoose.model('Session').find({'experiment': req.params['exid']}, function (err, experimentsessions) {
+                                mongoose.model('Session').find({'experiment': req.params['exid']}).populate('_participant').exec(function (err, experimentsessions) {
                                     if (err) {
                                         return console.error("Session: " + err);
                                     } else {
-                                        var sessionArray = {};
+                                        
 
-                                        for (var i in experimentsessions) {
-                                            mongoose.model('User').findById(experimentsessions[i].participant, function (err, participant) {
-                                                if (err) {
-                                                    return console.error("Participant: " + err);
-                                                } else {
-                                                    // console.log(participant.local.email);
-                                                    var entry = {
-                                                        _id: experimentsessions[i]._id,
-                                                        participant: participant.local.email
-                                                    };
-                                                    // console.log(entry);
-                                                    sessionArray.push(entry);
-                                                }
+                                        // for (var i in experimentsessions) {
+                                        //     mongoose.model('User').findById(experimentsessions[i].participant, function (err, participant) {
+                                        //         if (err) {
+                                        //             return console.error("Participant: " + err);
+                                        //         } else {
+                                        //             // console.log(participant.local.email);
+                                        //             var entry = {
+                                        //                 _id: experimentsessions[i]._id,
+                                        //                 participant: participant.local.email
+                                        //             };
+                                        //             // console.log(entry);
+                                        //             sessionArray.push(entry);
+                                        //         }
 
-                                            });
-                                        }
-
-                                        console.log(sessionArray);
-                                       
+                                        //     });
+                                        // }
                                         res.format({
                                             html: function(){
                                                 res.render('projects/experiment', {
                                                     project : project,
                                                     experiment : experiment,
                                                     deck : deck,
-                                                    sessions : sessionArray,
+                                                    sessions : experimentsessions,
                                                     user : req.user
                                                 });
                                             },
@@ -263,8 +260,8 @@ router.route('/:id/:exid/new')
         var dateSubmitted = new Date();
         mongoose.model('Session').findById(sessionId, function (err, session) {
             session.update({
+                _participant : participant,
                 experiment : experiment,
-                participant : participant,
                 groups: groups,
                 dateSubmitted : dateSubmitted
             }, function (err, session) {
