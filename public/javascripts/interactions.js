@@ -22,7 +22,7 @@ $(document).ready(function() {
     $('.new-experiment').on("click", function(){
         // console.log("Create New was clicked");
         var name = $('input#experiment-name').val();
-        var project = $('select#experiment-project').val();
+        var project = $('input#experiment-project').val();
         var category = $('input#experiment-category').val();
         var deck = $('select#experiment-deck').val();
         console.log(name);

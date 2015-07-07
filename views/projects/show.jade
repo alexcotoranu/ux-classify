@@ -12,6 +12,7 @@ block content
         div#experiment-wrapper
             if user.isAdmin
                 div#new-form
+                    input#experiment-project(type="hidden" value="#{project._id}")
                     label(for="experiment-name") Name:
                     input#experiment-name(placeholder="e.g. experiment 1")
                     label(for="experiment-category") Category:
@@ -23,7 +24,7 @@ block content
                     div.btn(class="new-experiment") Create New
                 div.experiments
                     each experiment, i in experiments
-                        -console.log(experiment.name);
+                        -console.log("Experiment name:" + experiment.name)
                             a(href="/projects/#{project._id}/#{experiment._id}")
                                 div.experiment(id="#{experiment._id}")
                                     span.name #{experiment.name}

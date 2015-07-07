@@ -489,6 +489,7 @@ input.deck-name {
   padding:0px 0px 0px 3px;
   border-top: 2px solid #3F6881;
   border-left: 2px solid #3F6881;
+  background-color:rgba(255, 255, 255, 0.1);
 }
 
 #results-wrapper > .graph-group {
