@@ -482,3 +482,62 @@ input.deck-name {
   display:inline-block;
   vertical-align: middle;
 }
+
+/* experiment results */
+
+.graph-group {
+  padding:0px 0px 0px 3px;
+  border-top: 2px solid #3F6881;
+  border-left: 2px solid #3F6881;
+}
+
+#results-wrapper > .graph-group {
+  border-right: 2px solid #3F6881;
+  border-bottom: 2px solid #3F6881;
+  margin-bottom:20px;
+  margin-right:20px;
+/*  max-width:20vw;
+  min-width:20vw;
+  display:inline-block;
+  vertical-align: top;*/
+}
+
+.graph-group span.name {
+  font-weight: bold;
+  border-radius: 2px;
+  background-color: #3079A6;
+  color: #FFFFFF;
+  padding: 3px 5px;
+  line-height: 30px;
+}
+
+/*.graph-group:last-of-type{
+  border-bottom: 2px solid rgba(122, 92, 132, 0.29);;
+}
+*/
+.nested-card {
+  text-align: right;
+  color:#FFFFFF;
+  /*margin-bottom:10px;*/
+}
+
+.nested-card .word {
+  border-radius: 2px;
+  background-color: #A30170;
+  color: #FFFFFF;
+  padding: 3px 5px;
+  line-height: 30px;
+  margin-right: 3px;
+}
+
+.nested-group {
+  margin-left: 1vw;
+}
+
+.graph-group.odd {
+  background-color:rgba(255, 255, 255, 0.1);
+}
+
+.graph-group.even {
+  background-color:rgba(254, 254, 254, 0.1);
+}
