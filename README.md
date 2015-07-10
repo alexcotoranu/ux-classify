@@ -26,7 +26,9 @@ If you don't have it, you might need to install Hotfix KB2731284 before you can 
 You can access the server at: http://localhost:3000/cards
 
 To add a new card, you need to have an admin user. Admin users can currently only be set through the database to users that have already signed up.
-> "isAdmin" : true  
+
+> "isAdmin" : true
+
 Is what you need to set in an update query for that user (if you are not familiar with the MongoDB CLI, you can use a GUI such as Robomongo or Mongovue). 
 
 Currently (and I apologize for the clunky admin interface), you click on 'Sessions' in the top right of the header bar (as an admin) and create each project, experiment, and deck.
