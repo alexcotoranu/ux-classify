@@ -9,6 +9,7 @@ mongoose.connect('mongodb://localhost/uxclassifydb');
 var userSchema = new mongoose.Schema({
     
     isAdmin: Boolean,
+    isGrad: Boolean,
     local: {
         username: String,
         password: String,
@@ -118,5 +119,6 @@ mongoose.model('Experiment', experimentSchema);
 var projectSchema = new mongoose.Schema({
     name: String, // i.e. "Project 1"
     dateCreated: { type: Date, default: Date.now },
+    // inviteCode: String
 });
 mongoose.model('Project', projectSchema);

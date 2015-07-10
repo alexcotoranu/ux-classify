@@ -71,6 +71,9 @@ a {
   position: absolute;
 }
 
+.well-notice {
+  background-color:#FAF6CB;
+}
 
 /* Prevent the text contents of draggable elements from being selectable. */
 [draggable] {
@@ -97,7 +100,8 @@ a {
 }
 
 #session-wrapper,
-#deck-wrapper {
+#deck-wrapper,
+#experiment-wrapper {
   position: absolute;
   top: 50px;
   left: 0px;
@@ -105,18 +109,21 @@ a {
 }
 
 #session-actions,
-#deck-actions {
+#deck-actions,
+#experiment-actions {
   padding:10px 15px;
   background-color: #3F474A;
 }
 
 #session-actions .btn ,
-#deck-actions .btn {
+#deck-actions .btn,
+#experiment-actions .btn {
     margin-left: 10px;
 }
 
 #session-actions h2,
-#deck-actions h2 {
+#deck-actions h2,
+#experiment-actions h2 {
   margin:0px;
   display: inline-block;
   color:#AEAEAE;
@@ -186,6 +193,10 @@ a {
   cursor: move;
 }
 
+.card.custom-card {
+  background-color:#FAF6CB;
+}
+
 .card .header,
 .card .footer,
 .card .count {
@@ -220,7 +231,6 @@ a {
 }
 
 .card.sortable {
-  background-color:#fefefe;
   float: left;
   text-align: center;
   width: 200px;

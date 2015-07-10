@@ -7,6 +7,10 @@ block script
 
 block content
 
+    h1 Results: #{session.experiment.name} 
+    p for #{session._participant.local.email}
+    p #{session.dateCreated}
+
     div#results-wrapper
 
         each group, i in groups

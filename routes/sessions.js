@@ -110,7 +110,7 @@ router.route('/:id')
     //::::::::::::::::::::::ANALYZE SESSION
     //GET the session
     .get(isAdmin, function(req, res, next) {
-        mongoose.model('Session').findById(req.params['id']).populate('_participant').exec(function (err, session) {
+        mongoose.model('Session').findById(req.params['id']).populate('_participant experiment').exec(function (err, session) {
             if (err) {
                 return console.error("Session: " + err);
             } else {

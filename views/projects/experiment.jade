@@ -9,13 +9,14 @@ block content
     header#top-header
         h2 #{title}
             
-    div#experiment-wrapper
+    div#results-wrapper
         h1 Experiment: #{experiment.name}
         div Date Created: #{experiment.dateCreated}
         div(id="#{project._id}") Project: #{project.name}
         div(id="#{deck._id}") Deck: #{deck.name}
         //- a.btn(href="#{experiment._id}/new") run experiment
 
+        br
 
         div#sessions-wrapper.well     
             table.table(class="table-hover")

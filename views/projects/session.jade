@@ -10,6 +10,7 @@ block content
         div#session-actions
             h2 #{experiment.name}
             button#save-session.btn(data-session-id="#{session._id}" class="pull-right") complete
+            button.btn(data-toggle="modal" data-target="#modal" class="pull-right") new card 
 
         div#flex-wrapper
             div#left-content
@@ -31,3 +32,20 @@ block content
                                         a(href='/cards/#{card._id}/edit') Edit
                                     div.option
                                         a(href='/cards/#{card._id}') Show
+
+block modal
+    div(class="modal fade" id="modal" role="dialog")
+        div(class="modal-dialog")
+                div(class="modal-content")
+                
+                    div(class="modal-header")
+                        button.close(type="button" data-dismiss="modal") &times;
+                        h4.modal-title Create New Custom Card
+                    div.modal-body
+                        p Name:
+                            input#inputWord(type="text", placeholder="ex. Name", name="word")
+                        p Example:
+                            input#inputExample(type="text", placeholder="ex. (e.g. John Smith)", name="example")
+                    div.modal-footer
+                        button#submit-custom-card.btn(type="button" class="btn-default") submit
+                        button.btn(type="button" class="btn-default" data-dismiss="modal") cancel                                        

@@ -19,7 +19,7 @@ $(document).ready(function() {
 
 
     // "create new" button logic
-    $('.new-experiment').on("click", function(){
+    $(document).on('click', '#create-experiment', function() {
         // console.log("Create New was clicked");
         var name = $('input#experiment-name').val();
         var project = $('input#experiment-project').val();
@@ -27,6 +27,11 @@ $(document).ready(function() {
         var deck = $('select#experiment-deck').val();
         console.log(name);
         createExperiment(name,project,category,deck);
+    });
+
+    $(document).on('click', '#accept-instructions', function() {
+        $('#modal').modal('toggle');
+        graduateUser();
     });
 
     //::::::::: DECKS & NEW CARDS
@@ -60,6 +65,15 @@ $(document).ready(function() {
         var example = $('#inputExample').val();
         createCard(word,example);
     });
+
+    //add new card (during deck management)
+    $(document).on('click', '#submit-custom-card', function () {
+        var word = $('#inputWord').val();
+        var example = $('#inputExample').val();
+        var isCustom = true;
+        createCard(word,example,isCustom);
+    });
+
 
     //::::::::: CARDS & GROUPS
     // "save session" button logic

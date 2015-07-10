@@ -1,3 +1,18 @@
+function graduateUser() {
+     $.ajax({
+        url: '/graduateuser',
+        type: 'POST',
+        success:function(data, textStatus, jqXHR) 
+        {
+            console.log("Participant has read the instructions.");
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            console.log(errorThrown);
+        }
+    });
+}
+
 
 function createDeck(name,cardArray,dateCreated){
     console.log("Deck is being saved");
@@ -79,6 +94,8 @@ function createCard(word,example,isCustom){
   
     if (!isCustom) {
         isCustom = false;
+    } else {
+        isCustom = true;
     }
 
     var data = {
@@ -111,7 +128,7 @@ function createCard(word,example,isCustom){
         console.log(res);
         var card = JSON.parse(res);
         console.log(card);
-        var newCard = '<div id="'+card._id+'" draggable="true" class="card">' +
+        var newCard = '<div id="'+card._id+'" draggable="true" class="card custom-card">' +
         '<div class="word">'+card.word+'</div>' +
         '<div class="example">'+card.example+'</div>' +
         '<div class="footer">' +
@@ -129,7 +146,13 @@ function createCard(word,example,isCustom){
             '</div>' +
         '</div>';
         console.log(newCard);
-        $('#all-cards').prepend(newCard);
+        if (!isCustom) {
+            $('#all-cards').prepend(newCard);
+        } else {
+            $('#cards').prepend(newCard);
+        }
+        
+
         $('#modal').modal('toggle');
     });
 }
@@ -253,8 +276,9 @@ function createExperiment(name,project,category,deck){
     post.done(function(res){
         console.log(res);
         var experiment = JSON.parse(res);
-        var newExperiment = '<div id="'+experiment._id+'" class="experiment"><div class="name">'+experiment.name+'</div></div>'; //<div class="date">'+experiment.dateCreated+'</div>
+        var newExperiment = '<a href="/projects/'+experiment.project+'/'+experiment._id+'"><div id="'+experiment._id+'" class="experiment"><div class="name">'+experiment.name+'</div></div></a>'; //<div class="date">'+experiment.dateCreated+'</div>
         $('.experiments').prepend(newExperiment);
+        $('#modal').modal('toggle');
     });
 }
 

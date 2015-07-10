@@ -7,21 +7,14 @@ block script
 block content
 
     div#project-wrapper
-        h1 #{project.name} Experiments
+        //- h1 #{project.name} Experiments
 
         div#experiment-wrapper
             if user.isAdmin
-                div#new-form
-                    input#experiment-project(type="hidden" value="#{project._id}")
-                    label(for="experiment-name") Name:
-                    input#experiment-name(placeholder="e.g. experiment 1")
-                    label(for="experiment-category") Category:
-                    input#experiment-category(placeholder="e.g. open or closed")
-                    label(for="experiment-deck") Deck:
-                    select#experiment-deck
-                        -each deck, i in decks
-                            option(value="#{deck._id}") #{deck.name}
-                    div.btn(class="new-experiment") Create New
+                div#experiment-actions
+                    h2 Available Experiments
+                    button.btn(data-project-id="#{project._id}" data-toggle="modal" data-target="#modal" class="pull-right") new experiment
+                        
                 div.experiments
                     each experiment, i in experiments
                         -console.log("Experiment name:" + experiment.name)
@@ -31,8 +24,30 @@ block content
             if !user.isAdmin
                 div.experiments
                     each experiment, i in experiments
-                        a(href="/projects/#{project._id}/#{experiment._id}/new")
+                        a(href="/projects/#{project._id}/#{experiment._id}/new") run experiment
                             div.experiment(id="#{experiment._id}")
                                 span.name #{experiment.name}
 
+block modal
+    div(class="modal fade" id="modal" role="dialog")
+        div(class="modal-dialog")
+                div(class="modal-content")
+                
+                    div(class="modal-header")
+                        button.close(type="button" data-dismiss="modal") &times;
+                        h4.modal-title Create New Experiment
+                    div.modal-body
+                        div#new-form
+                            input#experiment-project(type="hidden" value="#{project._id}")
+                            label(for="experiment-name") Name:
+                            input#experiment-name(placeholder="e.g. experiment 1")
+                            label(for="experiment-category") Category:
+                            input#experiment-category(placeholder="e.g. open or closed")
+                            label(for="experiment-deck") Deck:
+                            select#experiment-deck
+                                -each deck, i in decks
+                                    option(value="#{deck._id}") #{deck.name}
 
+                    div.modal-footer
+                        button#create-experiment.btn(type="button" class="btn-default") create new
+                        button.btn(type="button" class="btn-default" data-dismiss="modal") cancel

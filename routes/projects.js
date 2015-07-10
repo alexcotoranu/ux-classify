@@ -121,7 +121,7 @@ router.route('/:id/:exid/')
                             if (err) {
                                 return console.error("Deck: " + err);
                             } else {
-                                mongoose.model('Session').find({'experiment': req.params['exid']}).populate('_participant').exec(function (err, experimentsessions) {
+                                mongoose.model('Session').find({'experiment': req.params['exid']}).populate('_participant').sort({dateCreated: -1}).exec(function (err, experimentsessions) {
                                     if (err) {
                                         return console.error("Session: " + err);
                                     } else {
