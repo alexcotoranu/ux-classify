@@ -25,14 +25,18 @@ If you don't have it, you might need to install Hotfix KB2731284 before you can 
 
 You can access the server at: http://localhost:3000/cards
 
-To add a new card, there is currently no UI and so you need to open the following URL in your browser: http://localhost:3000/cards/new
+To add a new card, you need to have an admin user. Admin users can currently only be set through the database to users that have already signed up.
+> "isAdmin" : true  
+Is what you need to set in an update query for that user (if you are not familiar with the MongoDB CLI, you can use a GUI such as Robomongo or Mongovue). 
 
-You will need to do that each time you wish to add a card.
+Currently (and I apologize for the clunky admin interface), you click on 'Sessions' in the top right of the header bar (as an admin) and create each project, experiment, and deck.
+
+As an admin you can also view your hierarchy clusters in the results listing for each experiment :)
+
 
 # todo
 
 - add necessary fields to cards for tracking and ordering
-- store card position
-- allow for the definition of customized groupings of cards
-- have different decks of cards (to allow multiple experiments)
+
+- add user access permissions per project / experiment (possibly through signup token and/or admin approval)
 - a lot more stuff :)
