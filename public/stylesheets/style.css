@@ -295,6 +295,7 @@ a {
   border-width: 4px 0px 0px 0px;
   border-style: solid;
   min-height: 168px;
+  padding:0px 4px 4px 4px;
 }
 
 .group.odd {
@@ -326,6 +327,7 @@ a {
   background-color:#999999;
   border-width:4px;
   border-style:dashed;
+  padding:0px;
 }
 
 .group.over .group-name {
