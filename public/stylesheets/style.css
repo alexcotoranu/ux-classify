@@ -314,6 +314,7 @@ a {
   height:35px;
   font-size:25px;
   display:block;
+  min-width:258px;
 }
 
 .group.odd > input {
