@@ -116,7 +116,7 @@ router.route('/:id')
             } else {
                 mongoose.model('Group').find({'_id':{'$in':session.groups}}).populate('cards').exec(function (err, groups) {
                     if (err) {
-                        return console.error("Group: " + err);
+                        return console.error("Groups: " + err);
                     } else {
                         console.log(groups);
                         res.format({
@@ -128,7 +128,7 @@ router.route('/:id')
                                 });
                             },
                             json: function(){
-                                res.json(experiment,cards);
+                                res.json(session,groups,req.user);
                             }
                         });
                     }     

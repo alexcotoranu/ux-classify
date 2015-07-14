@@ -16,10 +16,14 @@ block content
 
     div#experiments.row
         each experiment, i in experiments
-            a(href="/projects/#{experiment.project}/#{experiment._id}/new")
-                div.experiment(class="col-sm-3")
-                    div(class="text-center") #{experiment.name}
-
+            if experiment.category == 'open'
+                a(href="/projects/#{experiment.project}/#{experiment._id}/new")
+                    div.experiment(class="col-sm-3 open")
+                        div(class="text-center") #{experiment.name}
+            if experiment.category == 'closed' && experiment.closedSession
+                a(href="/projects/#{experiment.project}/#{experiment._id}/new")
+                    div.experiment(class="col-sm-3 closed")
+                        div(class="text-center") #{experiment.name}
 
     if (user.isGrad == undefined || user.isGrad == false)
         script.

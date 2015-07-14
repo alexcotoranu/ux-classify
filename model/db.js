@@ -109,6 +109,7 @@ var experimentSchema = new mongoose.Schema({
     project: { type: Schema.Types.ObjectId, ref: 'Project' },
     deck: { type: Schema.Types.ObjectId, ref: 'Deck' },
     category: String, //i.e. "open" or "closed"
+    closedSession: { type: Schema.Types.ObjectId, ref: 'Session' },
     dateCreated: { type: Date, default: Date.now },
     isComplete: Boolean
 });

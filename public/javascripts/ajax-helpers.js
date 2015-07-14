@@ -222,6 +222,40 @@ function saveSession(sessionId, groupArray){
     });
 }
 
+function setupSession(sessionId, groupArray){
+    console.log("Session is being saved");
+  
+    var data = {
+        groups: JSON.stringify(groupArray),
+        sessionid: sessionId 
+    };
+
+    console.log(data);
+
+    //save groups
+    var post = $.ajax({
+        url: window.location.pathname,
+        type: 'POST',
+        data: data,
+        success:function(data, textStatus, jqXHR) 
+        {
+            //data: return data from server
+            console.log(data);
+            console.log("Session was successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown) 
+        {
+            //if fails 
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        var thankYou = '<div class="well"><h1>The Closed Experiment is now ready!</h1></div>';
+        $('#content-container').html(thankYou);
+    });
+}
+
 // function createSession(project, experiment){
 //   console.log("Session is being created");
 //   console.log(project);
@@ -276,7 +310,11 @@ function createExperiment(name,project,category,deck){
     post.done(function(res){
         console.log(res);
         var experiment = JSON.parse(res);
-        var newExperiment = '<a href="/projects/'+experiment.project+'/'+experiment._id+'"><div id="'+experiment._id+'" class="experiment"><div class="name">'+experiment.name+'</div></div></a>'; //<div class="date">'+experiment.dateCreated+'</div>
+        if (experiment.category == 'closed') {
+            var newExperiment = '<a href="/projects/'+experiment.project+'/'+experiment._id+'/setup"><div id="'+experiment._id+'" class="experiment closed unset"><div class="name">'+experiment.name+'</div></div></a>';
+        } else {
+            var newExperiment = '<a href="/projects/'+experiment.project+'/'+experiment._id+'"><div id="'+experiment._id+'" class="experiment '+experiment.category+'"><div class="name">'+experiment.name+'</div></div></a>';
+        }
         $('.experiments').prepend(newExperiment);
         $('#modal').modal('toggle');
     });

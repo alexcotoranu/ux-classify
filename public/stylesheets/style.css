@@ -306,7 +306,8 @@ a {
   background-color:#eaeaea;
 }
 
-.group input {
+.group input,
+.group .group-name {
   margin-left:25px;
   margin-top:25px;
   border:none;

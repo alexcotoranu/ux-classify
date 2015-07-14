@@ -23,7 +23,7 @@ $(document).ready(function() {
         // console.log("Create New was clicked");
         var name = $('input#experiment-name').val();
         var project = $('input#experiment-project').val();
-        var category = $('input#experiment-category').val();
+        var category = $('select#experiment-category').val();
         var deck = $('select#experiment-deck').val();
         console.log(name);
         createExperiment(name,project,category,deck);
@@ -87,6 +87,18 @@ $(document).ready(function() {
         });
         var sessionId = $(this).attr('data-session-id');
         saveSession(sessionId,groups);
+    });
+
+     $('#setup-session').on("click", function(){
+        // console.log("Save was clicked");
+        var groups = [];
+        $('.group').each(function() {
+            var id = $(this).attr('id');
+            saveGroup(id);
+            groups.push(id);
+        });
+        var sessionId = $(this).attr('data-session-id');
+        setupSession(sessionId,groups);
     });
 
     // group name change logic

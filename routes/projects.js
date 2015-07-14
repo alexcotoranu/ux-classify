@@ -203,6 +203,126 @@ router.route('/:id/:exid/new')
                     if (err) {
                         return console.error("Experiment: " + err);
                     } else {
+                        mongoose.model('Deck').findById(experiment.deck, function (err, deck) { 
+                            if (err) {
+                                return console.error("Deck: " + err);
+                            } else {
+                                mongoose.model('Card').find({'_id': {'$in':deck.cards}}, function (err, cards) {
+                                    if (err) {
+                                        return console.error("Cards: " + err);
+                                    } else {
+                                        if (experiment.category == 'closed') {
+                                            mongoose.model('Session').findById(experiment.closedSession).populate('_participant experiment').exec(function (err, template_session) {
+                                                if (err) {
+                                                    return console.error("Template Session: " + err);
+                                                } else {
+                                                    console.log(template_session)
+                                                    mongoose.model('Group').find({'_id':{'$in':template_session.groups}}).populate('cards').exec(function (err, template_groups) {
+                                                        if (err) {
+                                                            return console.error("Template Groups: " + err);
+                                                        } else {
+                                                            console.log(template_groups);
+                                                            mongoose.model('Card').find({'_id': {'$in':deck.cards}}, function (err, filtered_cards) { //todo actual filtering on aggregated cards inside all template_groups
+                                                                if (err) {
+                                                                    return console.error("Cards: " + err);
+                                                                } else {
+                                                                    res.format({
+                                                                        html: function(){
+                                                                            res.render('projects/session', {
+                                                                                  session : session,
+                                                                                  experiment : experiment,
+                                                                                  cards : filtered_cards,
+                                                                                  template_session : template_session,
+                                                                                  template_groups : template_groups,
+                                                                                  user : req.user
+                                                                            });
+                                                                        },
+                                                                        json: function(){
+                                                                            res.json(session,experiment,cards,template_session,template_groups,req.user);
+                                                                        }
+                                                                    });
+                                                                }
+                                                            });
+                                                        }     
+                                                    });
+                                                }
+                                            });
+                                        } else {
+                                            res.format({
+                                                html: function(){
+                                                    res.render('projects/session', {
+                                                        session : session,
+                                                        experiment : experiment,
+                                                        cards : cards,
+                                                        user : req.user
+                                                    });
+                                                },
+                                                json: function(){
+                                                    res.json(session,experiment,cards,req.user);
+                                                }
+                                            });
+                                        }   
+                                    }
+                                });     
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    })
+    //::::::::::::::::::::::SAVE SESSION
+    .post(isLoggedIn, function(req, res, next) {
+        var experiment = req.params['exid'];
+        var participant = req.user._id;
+        var sessionId = req.body.sessionid;
+        var groups = JSON.parse(req.body.groups);
+        var dateSubmitted = new Date();
+        mongoose.model('Session').findById(sessionId, function (err, session) {
+            session.update({
+                _participant : participant,
+                experiment : experiment,
+                groups: groups,
+                dateSubmitted : dateSubmitted
+            }, function (err, updated_session) {
+                if (err) {
+                    res.send("There was a problem adding the information to the database.");
+                } else {
+                    //Card has been created
+                    console.log('POST creating new session: ' + updated_session);
+                    res.format({
+                        html: function(){
+                            res.send(updated_session);
+                        },
+                        json: function(){
+                            res.json(updated_session);
+                        }
+                    });
+                }
+            });
+        });
+    });
+
+
+router.route('/:id/:exid/setup')
+    //::::::::::::::::::::::SETUP CLOSED EXPERIMENT
+    //GET all cards in deck
+    .get(isLoggedIn, function(req, res, next) {
+        var experiment = req.params['exid'];
+        var participant = req.user._id;
+        var dateCreated = new Date();
+        mongoose.model('Session').create({
+            _participant : participant,
+            experiment : experiment,
+            dateCreated : dateCreated
+        }, function (err, session) {
+            if (err) {
+                return console.error("Session: " + err);
+            } else {
+                mongoose.model('Experiment').findById(req.params['exid'], function (err, experiment) {
+                    if (err) {
+                        return console.error("Experiment: " + err);
+                    } else {
                         mongoose.model('Deck').findById(experiment.deck, function (err, deck) {
                             if (err) {
                                 return console.error("Deck: " + err);
@@ -221,10 +341,10 @@ router.route('/:id/:exid/new')
                                                 });
                                             },
                                             json: function(){
-                                                res.json(experiment,cards);
+                                                res.json(session,experiment,cards,req.user);
                                             }
                                         });
-                                    }     
+                                    }    
                                 });
                             }     
                         });
@@ -246,19 +366,27 @@ router.route('/:id/:exid/new')
                 experiment : experiment,
                 groups: groups,
                 dateSubmitted : dateSubmitted
-            }, function (err, session) {
+            }, function (err, updated_session) {
                 if (err) {
                     res.send("There was a problem adding the information to the database.");
                 } else {
-                    //Card has been created
-                    console.log('POST creating new session: ' + session);
-                    res.format({
-                        html: function(){
-                            res.send(session);
-                        },
-                        json: function(){
-                            res.json(session);
-                        }
+                    mongoose.model('Experiment').findById(experiment, function (err, found_experiment) {
+                        found_experiment.update({
+                            closedSession : sessionId
+                        }, function (err, updated_experiment) {
+                            if (err) {
+                                res.send("There was a problem adding the information to the database.");
+                            } else {
+                                res.format({
+                                    html: function(){
+                                        res.send(updated_session, updated_experiment);
+                                    },
+                                    json: function(){
+                                        res.json(updated_session, updated_experiment);
+                                    }
+                                });
+                            }
+                        });
                     });
                 }
             });

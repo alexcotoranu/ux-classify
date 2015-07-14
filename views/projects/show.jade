@@ -17,16 +17,34 @@ block content
                         
                 div.experiments
                     each experiment, i in experiments
-                        -console.log("Experiment name:" + experiment.name)
+                        -console.log(experiment)
+                        if experiment.category == 'open'
                             a(href="/projects/#{project._id}/#{experiment._id}")
-                                div.experiment(id="#{experiment._id}")
+                                div.experiment(id="#{experiment._id}" class="open")
                                     span.name #{experiment.name}
+                        if experiment.category == 'closed'
+                            if experiment.closedSession
+                                -console.log(experiment.closedSession)
+                                a(href="/projects/#{project._id}/#{experiment._id}")
+                                    div.experiment(id="#{experiment._id}" class="closed")
+                                        span.name #{experiment.name}
+                            if !experiment.closedSession
+                                -console.log('no session exsits')
+                                a(href="/projects/#{project._id}/#{experiment._id}/setup")
+                                    div.experiment(id="#{experiment._id}" class="closed unset")
+                                        span.name #{experiment.name}
+
             if !user.isAdmin
                 div.experiments
                     each experiment, i in experiments
-                        a(href="/projects/#{project._id}/#{experiment._id}/new") run experiment
-                            div.experiment(id="#{experiment._id}")
-                                span.name #{experiment.name}
+                        if experiment.category == 'open'
+                            a(href="/projects/#{project._id}/#{experiment._id}/new") run experiment
+                                div.experiment(id="#{experiment._id}" class="open")
+                                    span.name #{experiment.name}
+                        if experiment.category == 'closed' && experiment.closedSession
+                            a(href="/projects/#{project._id}/#{experiment._id}/new") run experiment
+                                div.experiment(id="#{experiment._id}" class="closed")
+                                    span.name #{experiment.name}
 
 block modal
     div(class="modal fade" id="modal" role="dialog")
@@ -42,7 +60,9 @@ block modal
                             label(for="experiment-name") Name:
                             input#experiment-name(placeholder="e.g. experiment 1")
                             label(for="experiment-category") Category:
-                            input#experiment-category(placeholder="e.g. open or closed")
+                            select#experiment-category
+                                option(value="open") open
+                                option(value="closed") closed
                             label(for="experiment-deck") Deck:
                             select#experiment-deck
                                 -each deck, i in decks
