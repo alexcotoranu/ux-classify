@@ -12,12 +12,13 @@ block content
     div#session-wrapper
         div#session-actions
             h2 #{experiment.name}
+            button#see-instructions.btn(data-toggle="modal" data-target="#instructions-modal" class="pull-right") instructions
             if experiment.category == 'closed' && !experiment.closedSession
                 button#setup-session.btn(data-session-id="#{session._id}" class="pull-right") complete setup
             else
                 button#save-session.btn(data-session-id="#{session._id}" class="pull-right") complete
 
-            button.btn(data-toggle="modal" data-target="#modal" class="pull-right") new card 
+            button.btn(data-toggle="modal" data-target="#modal" class="pull-right") new card
 
         div#flex-wrapper
             div#left-content
@@ -65,4 +66,35 @@ block modal
                             input#inputExample(type="text", placeholder="ex. (e.g. John Smith)", name="example")
                     div.modal-footer
                         button#submit-custom-card.btn(type="button" class="btn-default") submit
-                        button.btn(type="button" class="btn-default" data-dismiss="modal") cancel                                        
+                        button.btn(type="button" class="btn-default" data-dismiss="modal") cancel
+
+    div(class="modal fade" id="instructions-modal" role="dialog")
+        div(class="modal-dialog")
+                div(class="modal-content")
+                
+                    div(class="modal-header")
+                        button.close(type="button" data-dismiss="modal") &times;
+                        h4.modal-title UX Card-Sorting Exercise
+                    div.modal-body
+                        h3 First of all, thank you for your participation.
+                        p As you may be aware, we are in process of (re)designing our product. In order to make it as easy as possible to use, we would like to get some input from the people who will be using it. This is where you come in. We are going to ask you to perform a very simple exercise that will provide us with a great amount of insight into how we can make our product easier to use.
+                        h3 Here's how it works:
+                        ul
+                            li To your right will be a stack of cards. 
+                            li Those cards represent the content and functionality for this product. 
+                            li You should try to sort the cards into groups that make sense to you (drag and drop in the space to the left).
+                            li Don't worry about trying to design the naviation; we will take care of that.
+                            li In addition, do not be concerned with organizing the information as it is currently organized in other products or any earlier versions of our product.
+                        div.well(class="well-notice")
+                            span.glyphicon(class="glyphicon-info-sign")
+                            span  What we're interested in is seeing how you would organize the cards into groups that you would expect to find them in.
+                        ul
+                            li Once your groups are established, we'd like to have you name each group in a way that makes sense to you.
+                            li You are permitted to create sub-groups if you feel that it would be appropriate.
+                            li If you feel that something is missing, you can create a custom index card to add your own words.
+                            li Additionally, if a label is unclear, feel free to create a custom card with the label that you have in mind.
+                            li Any cards that you feel do not belong with the rest can simply be left outside the grouping area.
+                            li And finally, please do not hesitate to send us questions or feedback regarding the exercise and we'll do our best to answer.
+
+                    div.modal-footer
+                        button#accept-instructions.btn(type="button" class="btn-default") OK, Got it!

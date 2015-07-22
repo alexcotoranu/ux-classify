@@ -22,24 +22,28 @@ router.use(methodOverride(function(req, res){
 router.route('/graduateuser')
     .post(isLoggedIn, function(req, res, next) {
         mongoose.model('User').findById(req.user, function (err, user) {
-            user.update({
-                isGrad: true
-            }, function (err, session) {
-                if (err) {
-                    res.send("There was a problem adding the information to the database.");
-                } else {
-                    //Card has been created
-                    console.log('POST graduating user.');
-                    res.format({
-                        html: function(){
-                            // res.send(user);
-                        },
-                        json: function(){
-                            // res.json(user);
-                        }
-                    });
-                }
-            });
+            if (user.isGrad == undefined || user.isGrad == false){
+                user.update({
+                    isGrad: true
+                }, function (err, session) {
+                    if (err) {
+                        res.send("There was a problem adding the information to the database.");
+                    } else {
+                        //Card has been created
+                        console.log('POST graduating user.');
+                        res.format({
+                            html: function(){
+                                // res.send(user);
+                            },
+                            json: function(){
+                                // res.json(user);
+                            }
+                        });
+                    }
+                });
+            } else {
+                console.log("Current user is not a new user.");
+            }
         });
     });
 

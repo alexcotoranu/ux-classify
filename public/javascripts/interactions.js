@@ -30,7 +30,7 @@ $(document).ready(function() {
     });
 
     $(document).on('click', '#accept-instructions', function() {
-        $('#modal').modal('toggle');
+        $('#instructions-modal').modal('toggle');
         graduateUser();
     });
 
