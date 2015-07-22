@@ -164,6 +164,10 @@ a {
   background-color:#728993;
 }
 
+#deck-management-sidebar {
+  padding:15px;
+}
+
 #deck-session-sidebar,
 #deck-management-sidebar {
   min-height:100vh;
@@ -174,6 +178,10 @@ a {
 #deck-session-sidebar.over,
 #deck-management-sidebar.over {
   background-color:#30444D;
+}
+
+#deck-management-sidebar.over .card {
+  display:none;
 }
 
 #right-sidebar h1,
