@@ -1,4 +1,3 @@
-
 $(document).ready(function() {
 
     //::::::::: PROJECTS
@@ -76,6 +75,7 @@ $(document).ready(function() {
 
 
     //::::::::: CARDS & GROUPS
+
     // "save session" button logic
     $('#save-session').on("click", function(){
         // console.log("Save was clicked");
@@ -104,21 +104,34 @@ $(document).ready(function() {
     // group name change logic
     $(document).on('change','input.group-name', function () {
         var id = $(this).parent('.group').attr('id');
+        $(this).attr('value', $(this).val()); // sets the value of the input to what has been typed in (useful for when parent groups are deleted and the value needs to be copied)
         saveGroup(id);
+        autosave();
     });
 
     //group delete logic
     $(document).on('click','.delete-group', function(){
         var group = $(this).parent('.group');
         var groupname = $(this).siblings('.group-name');
+        var groupid = group.attr('id');
+
+        var oddgroups = $('#'+groupid+' .odd');
+        var evengroups = $('#'+groupid+' .even');
+        oddgroups.addClass('tempeven').removeClass('odd');
+        
+        var tempgroups = $('#'+groupid+' .tempeven');
+        evengroups.removeClass('even').addClass('odd');
+        tempgroups.addClass('even').removeClass('tempeven');
+
         groupname.remove();
         $(this).remove();
         var content = group.html();
         group.replaceWith(function(){
             return content;
         });
+        autosave();
     });
-    
+
 });
 
 // drag and drop functionality
@@ -301,7 +314,7 @@ $(document).ready(function(){
                 createGroup(target,source);
             }
         }
-
+        autosave();
         return false;
     }
 

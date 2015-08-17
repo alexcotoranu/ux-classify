@@ -1,3 +1,15 @@
+//autosave session logic
+function autosave(){
+    var groups = [];
+    $('.group').each(function() {
+        var id = $(this).attr('id');
+        saveGroup(id);
+        groups.push(id);
+    });
+    var sessionId = $('#save-session').attr('data-session-id');
+    saveSession(sessionId,groups,true);
+}
+
 function graduateUser() {
      $.ajax({
         url: '/graduateuser',
@@ -188,9 +200,11 @@ function saveCard(word,example,dateCreated,isCustom){
   });
 }
 
-function saveSession(sessionId, groupArray){
+function saveSession(sessionId, groupArray, auto){
     console.log("Session is being saved");
-  
+    
+    auto = auto || false;
+
     var data = {
         groups: JSON.stringify(groupArray),
         sessionid: sessionId 
@@ -206,7 +220,7 @@ function saveSession(sessionId, groupArray){
         success:function(data, textStatus, jqXHR) 
         {
             //data: return data from server
-            console.log(data);
+            // console.log(data);
             console.log("Session was successfully POSTED.");
         },
         error: function(jqXHR, textStatus, errorThrown) 
@@ -217,8 +231,10 @@ function saveSession(sessionId, groupArray){
     });
 
     post.done(function(res){
-        var thankYou = '<div class="well"><h1>Thank you for participating!</h1></div>';
-        $('#content-container').html(thankYou);
+        if (auto == false) {
+            var thankYou = '<div class="well"><h1>Thank you for participating!</h1></div>';
+            $('#content-container').html(thankYou);
+        }
     });
 }
 
@@ -399,7 +415,7 @@ function saveGroup(id){
   console.log(data);
 
   //save groups
-  $.ajax({
+  var post = $.ajax({
     url: '/groups/save',
     type: 'POST',
     data: data,
@@ -414,6 +430,10 @@ function saveGroup(id){
         //if fails 
         console.log(errorThrown);     
     }
+  });
+
+  post.done(function(res){
+    
   });
 }
 
@@ -465,11 +485,11 @@ function createGroup(target, source){
 
     post.done(function(res){
         console.log("This will be the group ID: "+ res);
-        groupHtml ='<div class="group '+ oddOrEven +'" id="' + res + '" style="border-color:' + newColour + ';"><input type="text" class="group-name" name="groupname" placeholder="Group Name Here..."><div class="delete-group no-highlight">X</div>'+ groupContent +'</div>';
+        groupHtml ='<div class="group '+ oddOrEven +'" id="' + res + '" style="border-color:' + newColour + ';"><input type="text" class="group-name" name="groupname" placeholder="Group Name Here..."><div class="delete-group no-highlight"><div class="icon-bar"></div><div class="icon-bar"></div></div>'+ groupContent +'</div>';
         target.replaceWith(groupHtml);
         source.remove();
-        saveGroup(res);
-        
+        saveGroup(res); //redundant but just in case...
+        autosave();
         // if (parentIsGroup(res)){
         //     console.log('The Parent IS a group!!!');
         //     var parentGroup = $("#"+res).parent().attr('id');

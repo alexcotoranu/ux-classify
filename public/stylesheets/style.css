@@ -374,12 +374,31 @@ a {
   text-align: center;
   cursor: pointer;
   position: absolute;
-  right: -4px;
+  right: 0px;
   top: 0px;
 }
 
-.delete-group:hover {
-  color:#ff5c5c;
+.delete-group .icon-bar {
+  background-color: #8C8B8B;
+  height: 20px;
+  width: 1px;
+  display: block;
+  transition:all 0.3s;
+  position:absolute;
+  top:8px;
+  right:16px;
+}
+
+.delete-group .icon-bar:first-child {
+  transform: rotate(45deg);
+}
+
+.delete-group .icon-bar:last-child {
+  transform: rotate(135deg);
+}
+
+.delete-group:hover .icon-bar{
+  background-color:#ff5c5c;
 }
 
 #new-btn {
