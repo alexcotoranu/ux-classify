@@ -107,8 +107,17 @@ $(document).ready(function() {
         saveGroup(id);
     });
 
-    
-
+    //group delete logic
+    $(document).on('click','.delete-group', function(){
+        var group = $(this).parent('.group');
+        var groupname = $(this).siblings('.group-name');
+        groupname.remove();
+        $(this).remove();
+        var content = group.html();
+        group.replaceWith(function(){
+            return content;
+        });
+    });
     
 });
 
