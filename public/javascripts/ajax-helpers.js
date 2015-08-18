@@ -485,7 +485,7 @@ function createGroup(target, source){
 
     post.done(function(res){
         console.log("This will be the group ID: "+ res);
-        groupHtml ='<div class="group '+ oddOrEven +'" id="' + res + '" style="border-color:' + newColour + ';"><input type="text" class="group-name" name="groupname" placeholder="Group Name Here..."><div class="delete-group no-highlight"><div class="icon-bar"></div><div class="icon-bar"></div></div>'+ groupContent +'</div>';
+        groupHtml ='<div class="group '+ oddOrEven +'" id="' + res + '" style="border-color:' + newColour + ';"><input type="text" class="group-name" name="groupname" placeholder="How are these similar?"><div class="delete-group no-highlight"><div class="icon-bar"></div><div class="icon-bar"></div></div>'+ groupContent +'</div>';
         target.replaceWith(groupHtml);
         source.remove();
         saveGroup(res); //redundant but just in case...

@@ -140,7 +140,7 @@ a {
 
 #sorting-space {
   flex:1;
-  background-color:#515D62;
+  background-color:rgba(81,93,98,1);
   min-height:calc(100vh - 50px);
   height:100%;
   padding:10px;

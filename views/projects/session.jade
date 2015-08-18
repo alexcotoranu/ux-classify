@@ -11,14 +11,14 @@ block script
 block content
     div#session-wrapper
         div#session-actions
-            h2 #{experiment.name}
-            button#see-instructions.btn(data-toggle="modal" data-target="#instructions-modal" class="pull-right") instructions
+            h2 #{experiment.name}: Group cards by similarity
+            button#see-instructions.btn(data-toggle="modal" data-target="#instructions-modal" class="pull-right") see instructions
             if experiment.category == 'closed' && !experiment.closedSession
                 button#setup-session.btn(data-session-id="#{session._id}" class="pull-right") complete setup
             else
-                button#save-session.btn(data-session-id="#{session._id}" class="pull-right") complete
+                button#save-session.btn(data-session-id="#{session._id}" class="pull-right") I'm done
 
-            button.btn(data-toggle="modal" data-target="#modal" class="pull-right") new card
+            button.btn(data-toggle="modal" data-target="#modal" class="pull-right") write my own card
 
         div#flex-wrapper
             div#left-content
