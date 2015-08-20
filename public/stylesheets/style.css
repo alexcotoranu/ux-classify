@@ -13,7 +13,7 @@ body {
 }
 
 a {
-  color: #00B7FF;
+  /*color: #00B7FF;*/
 }
 
 .no-highlight {
@@ -60,13 +60,15 @@ a {
   margin-right:30px;
 }
 
-.btn {
+#app-navbar .btn,
+#experiment-actions .btn {
   color:#ffffff;
   background-color:#63b672;
   transition:all 0.5s;
 }
 
-.btn:hover{
+#app-navbar .btn:hover,
+#experiment-actions .btn:hover{
   color:#ffffff;
   background-color:#12BD9C;
 }

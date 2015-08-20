@@ -6,6 +6,14 @@ var methodOverride = require('method-override');
 var passport = require('passport');
 var serveStatic = require('serve-static');
 var LocalStrategy = require('passport-local').Strategy;
+var nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
+var sgTransport = require('nodemailer-sendgrid-transport');
+var async = require('async');
+var crypto = require('crypto');
+var flash = require('express-flash');
+
+
 
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -92,11 +100,135 @@ router.route('/login')
 // process the login form
 // app.post('/login', do all our passport stuff here);
 
+//::::::::::::::::::::::FORGOT
+// show the forgot login form
+router.route('/forgot')
+    .get(isNotLoggedIn, function (req, res, next) {
+        res.render('forgot', {
+            user: req.user
+        });
+    })
+    .post(function (req, res, next) {
+        async.waterfall([
+            function (done) {
+                crypto.randomBytes(20, function(err, buf) {
+                    var token = buf.toString('hex');
+                    done(err, token);
+                });
+            },
+            function (token, done) {
+                mongoose.model('User').findOne({ 'local.email': req.body.email }, function(err, user) {
+                    if (!user) {
+                        req.flash('error', 'No account with that email address exists.');
+                        return res.redirect('/forgot');
+                    }
+
+                    user.resetPasswordToken = token;
+                    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+
+                    user.save(function(err) {
+                        done(err, token, user);
+                    });
+                });
+            },
+            function (token, user, done) {
+                var options = {
+                    auth: {
+                        api_key: 'YOURAPIKEY'
+                    }
+                };
+                var mailer = nodemailer.createTransport(sgTransport(options));
+                var email = {
+                    to: user.local.email,
+                    from: 'passwordreset@example.com',
+                    subject: 'UX-Classify Password Reset',
+                    text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
+                    'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
+                    'http://' + req.headers.host + '/reset/' + token + '\n\n' +
+                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                };
+                mailer.sendMail(email, function (err, res) {
+                    if (err) {
+                        return console.log(err);
+                    }
+                    console.log('Message sent: ' + res);
+                    req.flash('info', 'An e-mail has been sent to ' + user.local.email + ' with further instructions.');
+                    done(err, 'done');
+                });
+            }
+            ], function (err) {
+                if (err) return next(err);
+                res.redirect('/forgot');
+            });
+        });
+
+//::::::::::::::::::::::RESET
+// show the reset password form
+router.route('/reset/:token')
+    .get(isNotLoggedIn, function (req, res, next) {
+        mongoose.model('User').findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+            if (!user) {
+                req.flash('error', 'Password reset token is invalid or has expired.');
+                return res.redirect('/forgot');
+            }
+            res.render('reset', {
+                user: req.user
+            });
+        });
+    })
+    .post(function (req, res, next) {
+        async.waterfall([
+            function (done) {
+                mongoose.model('User').findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, function(err, user) {
+                    if (!user) {
+                        req.flash('error', 'Password reset token is invalid or has expired.');
+                        return res.redirect('back');
+                    }
+
+                    var hashedPassword = mongoose.model('User').schema.methods.generateHash(req.body.password);
+                    user.local.password = hashedPassword;
+                    user.resetPasswordToken = undefined;
+                    user.resetPasswordExpires = undefined;
+
+                    user.save(function(err) {
+                        req.logIn(user, function(err) {
+                            done(err, user);
+                        });
+                    });
+                });
+            },
+            function (user, done) {
+                var options = {
+                    auth: {
+                        api_key: 'YOURAPIKEY'
+                    }
+                };
+                var mailer = nodemailer.createTransport(sgTransport(options));
+                var email = {
+                    to: user.local.email,
+                    from: 'passwordreset@example.com',
+                    subject: 'Your password has been changed',
+                    text: 'Hello,\n\n' +
+                    'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+                };
+                mailer.sendMail(email, function (err, res) {
+                    if(err){
+                        return console.log(err);
+                    }
+                    console.log('Message sent: ' + res);
+                    req.flash('success', 'Success! Your password has been changed.');
+                    done(err);
+                });
+            }
+            ], function (err) {
+                res.redirect('/');
+            });
+        });
 
 //::::::::::::::::::::::SIGNUP
 // show the signup form
 router.route('/signup')
-    .get(isNotLoggedIn, function(req, res, next) {
+    .get(isNotLoggedIn, function (req, res, next) {
         // render the page and pass in any flash data if it exists
         res.format({
             html: function(){

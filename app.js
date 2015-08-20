@@ -10,7 +10,8 @@ var bodyParser = require('body-parser');
 var methodOverride = require('method-override');
 var session = require('express-session');
 var passport = require('passport');
-var flash = require('connect-flash');
+var flash = require('express-flash');
+var SMTPserver = require('smtp-server');
 
 var db = require('./model/db');
 // var cards = require('./model/card');
@@ -24,6 +25,12 @@ var sessions = require('./routes/sessions');
 var experiments = require('./routes/experiments');
 var projects = require('./routes/projects');
 var users = require('./routes/users');
+
+// var server = new SMTPserver({
+//   name : 'uxsmtp',
+// });
+
+// server.listen(465);
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));

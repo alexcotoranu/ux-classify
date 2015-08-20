@@ -10,20 +10,20 @@ block content
 
         //- show any messages that come back with authentication
         if message.length > 0
-            div(class="alert alert-danger") #{message}
+            .alert.alert-danger #{message}
 
         //- LOGIN FORM
         form(action="/login" method="post")
-            div(class="form-group")
+            .form-group
                 label(for="email") Email
                 input#email.form-control(type="text" name="email")
-            div(class="form-group")
+            .form-group
                 label(for="password") Password
                 input#password.form-control(type="password" name="password")
-
-            button.btn(type="submit" class="btn-warning btn-lg") Login
+            button.btn.btn-primary.btn-lg(type="submit") Login
+            a.btn.btn-link(href="/forgot") Forgot password?
         hr
-
+            
         p Need an account? 
             a(href="/signup") Signup
         p Or go 

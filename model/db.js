@@ -10,6 +10,8 @@ var userSchema = new mongoose.Schema({
     
     isAdmin: Boolean,
     isGrad: Boolean,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
     local: {
         username: String,
         password: String,

@@ -1,0 +1,44 @@
+extends layout
+//- if messages.error
+//-     .alert.alert-danger
+//-         div= messages.error
+//- if messages.info
+//-     .alert.alert-info
+//-         div= messages.info
+//- if messages.success
+//-     .alert.alert-success
+//-         div= messages.success
+block content
+
+    div(class="col-sm-6 col-sm-offset-3")
+
+        h1
+            span(class="fa fa-key")
+            |  Forgot Password
+
+        //- show any messages that come back with authentication
+        //- if message.length > 0
+        //-     .alert.alert-danger #{message}
+
+        if messages.error
+            .alert.alert-danger
+                div= messages.error
+        if messages.info
+            .alert.alert-info
+                div= messages.info
+        if messages.success
+            .alert.alert-success
+                div= messages.success
+
+        form(method='POST')
+            .form-group
+                label(for='email') Email
+                input.form-control(type='text', name='email', autofocus)
+            button.btn.btn-primary(type='submit') Reset Password
+        hr
+            
+        p Don't have an account? 
+            a(href="/signup") Signup
+        p Or go 
+            a(href="/") home
+            |.
