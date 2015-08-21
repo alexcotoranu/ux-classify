@@ -13,8 +13,6 @@ var async = require('async');
 var crypto = require('crypto');
 var flash = require('express-flash');
 
-
-
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(methodOverride(function(req, res){
@@ -184,7 +182,7 @@ router.route('/reset/:token')
                         req.flash('error', 'Password reset token is invalid or has expired.');
                         return res.redirect('back');
                     }
-
+                    
                     var hashedPassword = mongoose.model('User').schema.methods.generateHash(req.body.password);
                     user.local.password = hashedPassword;
                     user.resetPasswordToken = undefined;

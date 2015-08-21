@@ -15,7 +15,12 @@ $(document).ready(function() {
     //     var experimentId = $(this).attr('id');
     //     $('#page-wrapper').load('/projects/experiments/'+experimentId);
     // });
-
+    
+    //::::::::: EXPERIMENT MANAGEMENT
+    $(document).on('click', "submit-invites", function(){
+        var emails = $('inputEmails').val();
+        inviteUsers(emails);
+    });
 
     // "create new" button logic
     $(document).on('click', '#create-experiment', function() {
@@ -35,7 +40,7 @@ $(document).ready(function() {
 
     //::::::::: DECKS & NEW CARDS
     // "create new" button logic
-    $('#new-btn.new-deck').on("click", function(){
+    $(document).on("click","#new-btn.new-deck", function(){
         // console.log("Create New was clicked");
         var name = $('input.deck-name').val();
         // console.log(name);
