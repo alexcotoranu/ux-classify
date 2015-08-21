@@ -7,7 +7,6 @@ mongoose.connect('mongodb://localhost/uxclassifydb');
 // -------------------------------------------------------------------------------- USERS
 
 var userSchema = new mongoose.Schema({
-    
     isAdmin: Boolean,
     isGrad: Boolean,
     resetPasswordToken: String,
@@ -35,7 +34,6 @@ var userSchema = new mongoose.Schema({
         email: String,
         name: String
     }
-
 });
 
 
@@ -56,6 +54,69 @@ mongoose.model('User', userSchema);
 
 // // create the model for users and expose it to our app
 // module.exports = mongoose.model('User', userSchema);
+
+// -------------------------------------------------------------------------------- USER ROLES
+// var roleSchema = new mongoose.Schema({
+//     name: String,
+//     c: Boolean,
+//     r: Boolean,
+//     u: Boolean,
+//     d: Boolean 
+// });
+// mongoose.model('Role', roleSchema);
+
+// -------------------------------------------------------------------------------- PROJECT ACCESS
+var projectAccessSchema = new mongoose.Schema({
+    _project : { type: Schema.Types.ObjectId, ref: 'Project' },
+    user : { type: Schema.Types.ObjectId, ref: 'User' },
+});
+mongoose.model('Projectaccess', projectAccessSchema);
+
+// -------------------------------------------------------------------------------- DECK ACCESS
+var deckAccessSchema = new mongoose.Schema({
+    _deck : { type: Schema.Types.ObjectId, ref: 'Deck' },
+    user : { type: Schema.Types.ObjectId, ref: 'User' },
+});
+mongoose.model('Deckpermission', deckAccessSchema);
+
+// -------------------------------------------------------------------------------- EXPERIMENT PERMISSIONS
+var experimentPermissionSchema = new mongoose.Schema({
+    _experiment : { type: Schema.Types.ObjectId, ref: 'Experiment' },
+    user : { type: Schema.Types.ObjectId, ref: 'User' },
+    section : { type: Schema.Types.ObjectId, ref: 'Permission' },
+});
+mongoose.model('Experimentpermission', experimentPermissionSchema);
+
+// -------------------------------------------------------------------------------- USER PERMISSIONS
+var permissionSchema = new mongoose.Schema({
+    _user : { type: Schema.Types.ObjectId, ref: 'User' },
+    sessions: {
+        c: Boolean, // participate in / submit
+        r: Boolean, // see the experiment
+        u: Boolean, // modify the experiment (i.e. rename it, change deck)
+        d: Boolean //delete the experiment
+    },
+    results: {
+        // c: Boolean,
+        r: Boolean, // view results
+        // u: Boolean,
+        d: Boolean // clear results
+    },
+    users: {
+        c: Boolean, // create users
+        r: Boolean, // see other users
+        u: Boolean, // modify users
+        d: Boolean  // delete users
+    },
+    decks: {
+        c: Boolean, // create new decks
+        r: Boolean, // see the decks
+        u: Boolean, // modify the decks
+        d: Boolean // delete a deck
+    },
+    
+});
+mongoose.model('Permission', permissionSchema);
 
 // -------------------------------------------------------------------------------- CARDS
 var cardSchema = new mongoose.Schema({
