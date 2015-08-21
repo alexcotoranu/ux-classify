@@ -61,7 +61,7 @@ mongoose.model('User', userSchema);
 //     c: Boolean,
 //     r: Boolean,
 //     u: Boolean,
-//     d: Boolean 
+//     d: Boolean
 // });
 // mongoose.model('Role', roleSchema);
 
@@ -77,19 +77,12 @@ var deckAccessSchema = new mongoose.Schema({
     _deck : { type: Schema.Types.ObjectId, ref: 'Deck' },
     user : { type: Schema.Types.ObjectId, ref: 'User' },
 });
-mongoose.model('Deckpermission', deckAccessSchema);
+mongoose.model('Deckaccess', deckAccessSchema);
 
 // -------------------------------------------------------------------------------- EXPERIMENT PERMISSIONS
-var experimentPermissionSchema = new mongoose.Schema({
+var permissionSchema = new mongoose.Schema({
     _experiment : { type: Schema.Types.ObjectId, ref: 'Experiment' },
     user : { type: Schema.Types.ObjectId, ref: 'User' },
-    section : { type: Schema.Types.ObjectId, ref: 'Permission' },
-});
-mongoose.model('Experimentpermission', experimentPermissionSchema);
-
-// -------------------------------------------------------------------------------- USER PERMISSIONS
-var permissionSchema = new mongoose.Schema({
-    _user : { type: Schema.Types.ObjectId, ref: 'User' },
     sessions: {
         c: Boolean, // participate in / submit
         r: Boolean, // see the experiment
@@ -103,18 +96,11 @@ var permissionSchema = new mongoose.Schema({
         d: Boolean // clear results
     },
     users: {
-        c: Boolean, // create users
+        c: Boolean, // invite new users
         r: Boolean, // see other users
         u: Boolean, // modify users
         d: Boolean  // delete users
-    },
-    decks: {
-        c: Boolean, // create new decks
-        r: Boolean, // see the decks
-        u: Boolean, // modify the decks
-        d: Boolean // delete a deck
-    },
-    
+    }
 });
 mongoose.model('Permission', permissionSchema);
 

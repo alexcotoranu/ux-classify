@@ -125,20 +125,27 @@ router.route('/:id/:exid/')
                                     if (err) {
                                         return console.error("Session: " + err);
                                     } else {
-                                        res.format({
-                                            html: function(){
-                                                res.render('projects/experiment', {
-                                                    project : project,
-                                                    experiment : experiment,
-                                                    deck : deck,
-                                                    sessions : experimentsessions,
-                                                    user : req.user
-                                                });
-                                            },
-                                            json: function(){
-                                                res.json(project, experiment, deck, sessions);
+                                        mongoose.model('Permission').findById(req.params['exid']).populate('_user').exec(function (err, permissions) {
+                                            if (err) {
+                                                return console.error("Permission: " + err);
+                                            } else {
+                                                res.format({
+                                                    html: function(){
+                                                        res.render('projects/experiment', {
+                                                            project : project,
+                                                            experiment : experiment,
+                                                            deck : deck,
+                                                            sessions : experimentsessions,
+                                                            permissions: permissions,
+                                                            user : req.user
+                                                        });
+                                                    },
+                                                    json: function(){
+                                                        res.json(project, experiment, deck, sessions);
+                                                    }
+                                                });     
                                             }
-                                        });     
+                                        });
                                     }
                                 });
                             }

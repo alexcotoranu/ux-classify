@@ -17,8 +17,60 @@ block content
         //- a.btn(href="#{experiment._id}/new") run experiment
 
         br
+        //- ul.nav.nav-pills
+        //-     li.active(role="presentation")
+        //-         a.btn(href="#") 
+        //-             span.glyphicon.glyphicon-stats
+        //-             |  Results
+        //-     li(role="presentation")
+        //-         a.btn(href="#")
+        //-             span.glyphicon.glyphicon-user
+        //-             |  Users
+        //-     li(role="presentation")
+        //-         a.btn(href="#")
+        //-             span.glyphicon.glyphicon-envelope
+        //-             |  Invite
+        
+        div#permissions-wrapper.well     
+            table.table(class="table-hover")
+                thead
+                    tr
+                        th participant
+                        th session - c
+                        th session - r
+                        th session - u
+                        th session - d
+                        th results - c
+                        th results - r
+                        th results - u
+                        th results - d
+                tbody
+                        tr
+                            td(colspan="9")
+                                a.btn(href="#" data-toggle="modal" data-target="#invite-modal") invite participants
+                    if permissions
+                        each permission, i in permissions
+                            tr
+                                td
+                                    div #{permission.user.local.email}
+                                td
+                                    div #{permission.sessions.c}
+                                td
+                                    div #{permission.sessions.r}
+                                td
+                                    div #{permission.sessions.u}
+                                td
+                                    div #{permission.sessions.d}
+                                td
+                                    div #{permission.results.c}
+                                td
+                                    div #{permission.results.r}
+                                td
+                                    div #{permission.results.u}
+                                td
+                                    div #{permission.results.d}
 
-        div#sessions-wrapper.well     
+        div#sessions-wrapper.well
             table.table(class="table-hover")
                 thead
                     tr
@@ -36,3 +88,19 @@ block content
                             //-     div #{session.group}
                             td
                                 p #{session.dateCreated}
+
+
+block modal
+    div(class="modal fade" id="invite-modal" role="dialog")
+        div(class="modal-dialog")
+                div(class="modal-content")
+                
+                    div(class="modal-header")
+                        button.close(type="button" data-dismiss="modal") &times;
+                        h4.modal-title Invite Participants
+                    div.modal-body
+                        p Invitees:
+                            input#inputEmails.form-control(type="text", placeholder="ex. name@example.com;", name="emails")
+                    div.modal-footer
+                        button#submit-invites.btn(type="button" class="btn-success") submit
+                        button.btn(type="button" class="btn-warning" data-dismiss="modal") cancel

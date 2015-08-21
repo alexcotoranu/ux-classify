@@ -1,3 +1,32 @@
+function inviteUsers(emails) {
+
+    //invite users
+    var post = $.ajax({
+        url: 'users/invite',
+        type: 'POST',
+        data: emails,
+        success:function(data, textStatus, jqXHR) 
+        {
+            //data: return data from server
+            console.log(data);
+            console.log("Invitees were successfully POSTED.");
+        },
+        error: function(jqXHR, textStatus, errorThrown)
+        {
+            //if fails
+            console.log(errorThrown);
+        }
+    });
+
+    post.done(function(res){
+        console.log(res);
+        var invitees = JSON.parse(res);
+        // should format the above json
+        $('#permissions-wrapper tbody').prepend(invitees);
+        $('#modal').modal('toggle');
+    });
+}
+
 //autosave session logic
 function autosave(){
     var groups = [];
@@ -11,7 +40,7 @@ function autosave(){
 }
 
 function graduateUser() {
-     $.ajax({
+    $.ajax({
         url: '/graduateuser',
         type: 'POST',
         success:function(data, textStatus, jqXHR) 
