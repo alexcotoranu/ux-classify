@@ -67,21 +67,21 @@ mongoose.model('User', userSchema);
 
 // -------------------------------------------------------------------------------- PROJECT ACCESS
 var projectAccessSchema = new mongoose.Schema({
-    _project : { type: Schema.Types.ObjectId, ref: 'Project' },
+    project : { type: Schema.Types.ObjectId, ref: 'Project' },
     user : { type: Schema.Types.ObjectId, ref: 'User' },
 });
 mongoose.model('Projectaccess', projectAccessSchema);
 
 // -------------------------------------------------------------------------------- DECK ACCESS
 var deckAccessSchema = new mongoose.Schema({
-    _deck : { type: Schema.Types.ObjectId, ref: 'Deck' },
+    deck : { type: Schema.Types.ObjectId, ref: 'Deck' },
     user : { type: Schema.Types.ObjectId, ref: 'User' },
 });
 mongoose.model('Deckaccess', deckAccessSchema);
 
 // -------------------------------------------------------------------------------- EXPERIMENT PERMISSIONS
 var permissionSchema = new mongoose.Schema({
-    _experiment : { type: Schema.Types.ObjectId, ref: 'Experiment' },
+    experiment : { type: Schema.Types.ObjectId, ref: 'Experiment' },
     user : { type: Schema.Types.ObjectId, ref: 'User' },
     sessions: {
         c: Boolean, // participate in / submit
