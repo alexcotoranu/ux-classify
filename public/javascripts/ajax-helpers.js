@@ -1,10 +1,15 @@
 function inviteUsers(emails) {
 
     //invite users
+    console.log("EMAILS: " + emails);
+    var data = {
+        emails: emails
+    }
+
     var post = $.ajax({
-        url: 'users/invite',
+        url: window.location.pathname+'/invite',
         type: 'POST',
-        data: emails,
+        data: data,
         success:function(data, textStatus, jqXHR) 
         {
             //data: return data from server

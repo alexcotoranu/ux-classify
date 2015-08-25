@@ -17,8 +17,9 @@ $(document).ready(function() {
     // });
     
     //::::::::: EXPERIMENT MANAGEMENT
-    $(document).on('click', "submit-invites", function(){
-        var emails = $('inputEmails').val();
+    $(document).on('click', '#submit-invites', function(){
+        console.log("Submitting invitations...")
+        var emails = $('#inputEmails').val();
         inviteUsers(emails);
     });
 
