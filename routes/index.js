@@ -13,6 +13,8 @@ var async = require('async');
 var crypto = require('crypto');
 var flash = require('express-flash');
 
+
+
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(methodOverride(function(req, res){
@@ -132,13 +134,13 @@ router.route('/forgot')
             function (token, user, done) {
                 var options = {
                     auth: {
-                        api_key: ''
+                        api_key: 'YOURAPIKEY'
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
                 var email = {
                     to: user.local.email,
-                    from: 'email@example.com',
+                    from: 'passwordreset@example.com',
                     subject: 'UX-Classify Password Reset',
                     text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -182,7 +184,7 @@ router.route('/reset/:token')
                         req.flash('error', 'Password reset token is invalid or has expired.');
                         return res.redirect('back');
                     }
-                    
+
                     var hashedPassword = mongoose.model('User').schema.methods.generateHash(req.body.password);
                     user.local.password = hashedPassword;
                     user.resetPasswordToken = undefined;
@@ -198,13 +200,13 @@ router.route('/reset/:token')
             function (user, done) {
                 var options = {
                     auth: {
-                        api_key: ''
+                        api_key: 'YOURAPIKEY'
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
                 var email = {
                     to: user.local.email,
-                    from: 'email@example.com',
+                    from: 'passwordreset@example.com',
                     subject: 'Your password has been changed',
                     text: 'Hello,\n\n' +
                     'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
