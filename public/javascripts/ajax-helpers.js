@@ -1,7 +1,6 @@
+// invite users
 function inviteUsers(emails) {
-
-    //invite users
-    console.log("EMAILS: " + emails);
+    // console.log("EMAILS: " + emails);
     var data = {
         emails: emails
     }
@@ -27,8 +26,8 @@ function inviteUsers(emails) {
         console.log(res);
         var invitees = JSON.parse(res);
         // should format the above json
-        $('#permissions-wrapper tbody').prepend(invitees);
-        $('#modal').modal('toggle');
+        // $('#permissions-wrapper tbody').prepend(invitees);
+        $('#invite-modal').modal('toggle');
     });
 }
 
