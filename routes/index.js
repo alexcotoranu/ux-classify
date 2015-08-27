@@ -132,13 +132,13 @@ router.route('/forgot')
             function (token, user, done) {
                 var options = {
                     auth: {
-                        api_key: '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'
+                        api_key: ''
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
                 var email = {
                     to: user.local.email,
-                    from: 'passwordreset@ux-classify.net',
+                    from: 'email@example.com',
                     subject: 'UX-Classify Password Reset',
                     text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -198,13 +198,13 @@ router.route('/reset/:token')
             function (user, done) {
                 var options = {
                     auth: {
-                        api_key: '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'
+                        api_key: ''
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
                 var email = {
                     to: user.local.email,
-                    from: 'passwordreset@ux-classify.net',
+                    from: 'email@example.com',
                     subject: 'Your password has been changed',
                     text: 'Hello,\n\n' +
                     'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
@@ -254,7 +254,7 @@ router.route('/signup')
 // we will use route middleware to verify this (the isLoggedIn function)
 router.route('/profile')
     .get(isLoggedIn, function(req, res, next) {
-        mongoose.model('Experiment').find({}).sort({dateCreated: -1}).exec(function (err, experiments) {
+        mongoose.model('Permission').find( { $and: [ {'sessions.r': true }, {'user': req.user} ]} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permissions) {
             if (err) {
                 console.error(err);
             } else {
@@ -264,11 +264,11 @@ router.route('/profile')
                     html: function(){
                         res.render('profile', {
                             user : req.user,
-                            experiments: experiments
+                            permissions: permissions
                         });
                     },
                     json: function(){
-                        res.json(user, experiments);
+                        res.json(user, permissions);
                     }
                 });
             }
