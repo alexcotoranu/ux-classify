@@ -535,13 +535,13 @@ router.route('/:id/:exid/invite')
 function inviteUser (address, token) {
     var options = {
         auth: {
-            api_key: 'YOURAPIKEY'
+            api_key: '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'
         }
     };
     var mailer = nodemailer.createTransport(sgTransport(options));
     var email = {
         to: address,
-        from: 'invitations@example.com',
+        from: 'invitations@ux-classify.net',
         subject: 'Invitation: User Experience Session',
         text: 'Hello,\n\n' +
         'We invite you to participate in a quick user experience (UX) experiment session to help us improve our products.\n'
