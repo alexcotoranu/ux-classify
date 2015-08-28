@@ -254,7 +254,7 @@ router.route('/signup')
 // we will use route middleware to verify this (the isLoggedIn function)
 router.route('/profile')
     .get(isLoggedIn, function(req, res, next) {
-        mongoose.model('Experiment').find({}).sort({dateCreated: -1}).exec(function (err, experiments) {
+        mongoose.model('Permission').find( { $and: [ {'sessions.r': true }, {'user': req.user} ]} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permissions) {
             if (err) {
                 console.error(err);
             } else {
@@ -264,11 +264,11 @@ router.route('/profile')
                     html: function(){
                         res.render('profile', {
                             user : req.user,
-                            experiments: experiments
+                            permissions: permissions
                         });
                     },
                     json: function(){
-                        res.json(user, experiments);
+                        res.json(user, permissions);
                     }
                 });
             }

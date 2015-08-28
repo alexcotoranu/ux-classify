@@ -21,6 +21,70 @@ module.exports = function(passport) {
         });
     });
 
+    // passport.use('local-invite', new LocalStrategy({
+    //     // by default, local strategy uses username and password, we will override with email
+    //     usernameField : 'email',
+    //     passwordField : 'password',
+    //     passReqToCallback : true // allows us to pass back the entire request to the callback
+    // },
+    // function(req, email, done) {
+    //     console.log("local invite strategy");
+    //     // asynchronous
+    //     // User.findOne wont fire unless data is sent back
+    //     process.nextTick(function() {
+    //         console.log("check if email is already in use");
+    //         // find a user whose email is the same as the forms email
+    //         // we are checking to see if the user trying to login already exists
+    //         mongoose.model('User').findOne({ 'local.email' :  email }, function(err, user) {
+    //             // if there are any errors, return the error
+    //             if (err)
+    //                 return done(err);
+    //             // check to see if theres already a user with that email
+    //             if (user) {
+    //                 // return done(null, false, req.flash('signupMessage', 'That email is already taken.'));
+    //                 //check if user has project access
+    //                     //if the user has project access continue
+    //                     //if the user doesn't have project access provide it
+    //                         // mongoose.model('Projectaccess').create({
+    //                         //     '_project': projectid,
+    //                         //     'user': userid
+    //                         // });
+    //                     //check if the user has experiment access
+    //                         //if the user has experiment access, mention that the user already does, and move on
+    //                         //if the user does not yet have experiment access, provide it
+    //                             // var defaultPermissions = {
+    //                             //     c:true,
+    //                             //     r:true,
+    //                             // }
+    //                             // mongoose.model('Permission').create({
+    //                             //     '_experiment': experimentid,
+    //                             //     'user': userid,
+    //                             //     'sessions': defaultPermissions,
+    //                             // });
+
+    //             } else {
+    //                   console.log("The system is trying to register a user.")
+    //                 // if there is no user with that email
+    //                 // create the user
+    //                 console.log(mongoose.model('User').schema.methods);
+    //                 var hashedPassword = mongoose.model('User').schema.methods.generateHash(password);
+    //                 mongoose.model('User').create({
+    //                     // set the user's local credentials
+    //                     'local.email' : email,
+    //                     'local.password' : hashedPassword
+    //                 }, function (err, newUser) {
+    //                     if (err)
+    //                         throw err;
+    //                     return done(null, newUser);
+    //                   });
+    //               }
+
+    //         });
+
+    //     });
+
+    // }));
+
     passport.use('local-signup', new LocalStrategy({
         // by default, local strategy uses username and password, we will override with email
         usernameField : 'email',
@@ -56,7 +120,7 @@ module.exports = function(passport) {
                         if (err)
                             throw err;
                         return done(null, newUser);
-                      });
+                    });
                   }
 
             });

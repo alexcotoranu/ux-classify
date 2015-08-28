@@ -6,6 +6,12 @@ var methodOverride = require('method-override');
 var passport = require('passport');
 var serveStatic = require('serve-static');
 var LocalStrategy = require('passport-local').Strategy;
+var nodemailer = require('nodemailer');
+var smtpTransport = require('nodemailer-smtp-transport');
+var sgTransport = require('nodemailer-sendgrid-transport');
+var async = require('async');
+var crypto = require('crypto');
+var flash = require('express-flash');
 
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -125,7 +131,7 @@ router.route('/:id/:exid/')
                                     if (err) {
                                         return console.error("Session: " + err);
                                     } else {
-                                        mongoose.model('Permission').findById(req.params['exid']).populate('_user').exec(function (err, permissions) {
+                                        mongoose.model('Permission').find({'experiment':req.params['exid']}).populate('user').exec(function (err, permissions) {
                                             if (err) {
                                                 return console.error("Permission: " + err);
                                             } else {
@@ -467,6 +473,166 @@ router.route('/:id/:exid/setup')
 //         })
 //     });
 
+
+//::::::::::::::::::::::HOME PAGE (WITH LOGIN LINKS)
+router.route('/:id/:exid/invite')
+    .post(isLoggedIn, function (req, res, next) {
+        var project = req.params['id'];
+        var experiment = req.params['exid'];
+        var emailstring = req.body.emails;
+        var emails = extractEmails(emailstring);
+        // console.log(emails);
+        // console.log(emails.length);
+
+        async.each(emails, function (email, callback) {
+            var token = (+new Date * Math.random()).toString(36).substring(0,5);
+            var hashedPassword = mongoose.model('User').schema.methods.generateHash(token);
+            mongoose.model('User').findOne({'local.email' :  email }, function (err, user){
+                if (err)
+                    res.send("There was a problem with the query to the database.");
+                if (user) {
+                    //ensure that user has project access
+                    console.log('User was found: ' + user.local.email);
+                    ensureAccess(project, experiment, user);
+                    callback('User already esists.');
+                } else {
+                    console.log('User was not found: ' + email);
+                    mongoose.model('User').create({
+                        // set the user's local credentials
+                        'local.email' : email,
+                        'local.password' : hashedPassword
+                    }, function (err, newUser) {
+                        if (err)
+                            throw err;
+                        ensureAccess(project, experiment, newUser);
+                        inviteUser(newUser.local.email, token);
+                    });
+                    callback('User invited!');
+                }
+            });
+        }, function(err){
+            if( err ) {
+                console.log('There was an error inviting a user.');
+                console.log(err);
+            } else {
+                console.log('All users have been invited!');
+            }
+        });
+
+        res.format({
+            html: function(){
+                res.send(emails);
+            },
+            json: function(){
+                res.json(emails);
+            }
+        });
+    });
+
+
+// invite mails
+
+function inviteUser (address, token) {
+    var options = {
+        auth: {
+            api_key: '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'
+        }
+    };
+    var mailer = nodemailer.createTransport(sgTransport(options));
+    var email = {
+        to: address,
+        from: 'invitations@ux-classify.net',
+        subject: 'Invitation: User Experience Session',
+        text: 'Hello,\n\n' +
+        'We invite you to participate in a quick user experience (UX) experiment session to help us improve our products.\n'
+        + 'You can log in with your email address: ' + address + ' using your temporary password: ' + token + '. \n Thank you kindly.'
+    };
+    mailer.sendMail(email, function (err, res) {
+        if(err){
+            return console.log(err);
+        }
+        console.log('Message sent: ' + res);
+        // req.flash('success', 'Success! Your password has been changed.');
+        // done(err);
+    });   
+}
+
+function ensureAccess (project, experiment, user) {
+    mongoose.model('Projectaccess').findOne({ 'project' : project, 'user' : user }, function (err, projectaccess) {
+        if (err) {
+            res.send("There was a problem adding the information to the database.");
+        } else {
+            if(projectaccess != null) {//if the user has project access
+                //ensure experiment access
+                ensurePermissions(experiment, user);
+            } else {//if the user doesn't have project access provide it
+                mongoose.model('Projectaccess').create({
+                    project: project,
+                    user: user
+                }, function (err, new_projectacces) {
+                    //ensure experiment access
+                    ensurePermissions(experiment, user);
+                });
+            }  
+        }
+    });
+}
+
+//ensure default permissions
+function ensurePermissions (experiment, user) {
+    var defaultPermissions = {
+            c:true,
+            r:true,
+    }
+    mongoose.model('Permission').findOne({ 'experiment' : experiment, 'user' : user } , function (err, permission) {
+        if (err) {
+            res.send("There was a problem with the query to the database.");
+        } else {
+           if(permission != null) {//if the user has experiment access
+                //make sure that they have default participation rights
+                // console.log(permission);
+                if(permission.sessions.c == false || permission.sessions.r == false) {
+                    permission.update({
+                        experiment : experiment,
+                        user : user._id,
+                        sessions : defaultPermissions
+                    });
+                } else {
+                    //do nothing
+                    console.log('User already has default permissions.');
+                }
+                
+            } else {//if the user doesn't have experiment access provide it through default rights
+                mongoose.model('Permission').create({
+                    experiment: experiment,
+                    user: user._id,
+                    sessions: defaultPermissions,
+                });
+                console.log('Added default permissions for user.');
+            } 
+        }
+    });
+ }
+
+// function hasPermission (req, res, next) {
+//     mongoose.model('Permission').findOne( {'user': req.user, 'experiment': req.params.['exid'], 'sessions.c':true} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permission) {
+//         if (err)
+//             console.log('Permission check failed')
+        
+//             if( permission)
+//             return next();
+//         }
+//         // if they aren't redirect them to the home page
+//     res.location('/');
+//     res.setHeader('Location','/');
+//     res.redirect('/');
+// }
+
+//email extraction
+function extractEmails (text) {
+    var emailstring = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
+    return  emailstring;
+}
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 

@@ -29,24 +29,6 @@ router.get('/', function(req, res, next) {
   res.send('respond with a resource');
 });
 
-
-//::::::::::::::::::::::HOME PAGE (WITH LOGIN LINKS)
-router.route('/')
-    .get(isNotLoggedIn, function(req, res, next) {
-        var title = 'UX-Classify';
-        res.format({
-            html: function(){
-                res.render('index', {
-                    title: title
-                });
-            },
-            json: function(){
-                res.json(title);
-            }
-        });
-    });
-
-
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 

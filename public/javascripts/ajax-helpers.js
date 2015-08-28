@@ -1,10 +1,14 @@
+// invite users
 function inviteUsers(emails) {
+    // console.log("EMAILS: " + emails);
+    var data = {
+        emails: emails
+    }
 
-    //invite users
     var post = $.ajax({
-        url: 'users/invite',
+        url: window.location.pathname+'/invite',
         type: 'POST',
-        data: emails,
+        data: data,
         success:function(data, textStatus, jqXHR) 
         {
             //data: return data from server
@@ -22,8 +26,8 @@ function inviteUsers(emails) {
         console.log(res);
         var invitees = JSON.parse(res);
         // should format the above json
-        $('#permissions-wrapper tbody').prepend(invitees);
-        $('#modal').modal('toggle');
+        // $('#permissions-wrapper tbody').prepend(invitees);
+        $('#invite-modal').modal('toggle');
     });
 }
 

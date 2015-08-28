@@ -5,7 +5,7 @@ block script
     script(type="text/javascript" src="../../javascripts/interactions.js")
 
 block content
-  
+
     header#top-header
         h2 #{title}
             
@@ -35,40 +35,41 @@ block content
             table.table(class="table-hover")
                 thead
                     tr
-                        th participant
-                        th session - c
-                        th session - r
-                        th session - u
-                        th session - d
-                        th results - c
-                        th results - r
-                        th results - u
-                        th results - d
+                        th participants
+                        //- th session - c
+                        //- th session - r
+                        //- th session - u
+                        //- th session - d
+                        //- th results - c
+                        //- th results - r
+                        //- th results - u
+                        //- th results - d
                 tbody
-                        tr
-                            td(colspan="9")
-                                a.btn(href="#" data-toggle="modal" data-target="#invite-modal") invite participants
+                    tr
+                        td(colspan="9")
+                            a.btn(href="#" data-toggle="modal" data-target="#invite-modal") invite participants
                     if permissions
                         each permission, i in permissions
-                            tr
-                                td
-                                    div #{permission.user.local.email}
-                                td
-                                    div #{permission.sessions.c}
-                                td
-                                    div #{permission.sessions.r}
-                                td
-                                    div #{permission.sessions.u}
-                                td
-                                    div #{permission.sessions.d}
-                                td
-                                    div #{permission.results.c}
-                                td
-                                    div #{permission.results.r}
-                                td
-                                    div #{permission.results.u}
-                                td
-                                    div #{permission.results.d}
+                            if permission.user
+                                tr
+                                    td
+                                        div #{permission.user.local.email}
+                                    //- td
+                                    //-     div #{permission.sessions.c}
+                                    //- td
+                                    //-     div #{permission.sessions.r}
+                                    //- td
+                                    //-     div #{permission.sessions.u}
+                                    //- td
+                                    //-     div #{permission.sessions.d}
+                                    //- td
+                                    //-     div #{permission.results.c}
+                                    //- td
+                                    //-     div #{permission.results.r}
+                                    //- td
+                                    //-     div #{permission.results.u}
+                                    //- td
+                                    //-     div #{permission.results.d}
 
         div#sessions-wrapper.well
             table.table(class="table-hover")
@@ -79,15 +80,16 @@ block content
                         th date
                 tbody
                     each session, i in sessions
-                        tr
-                            td
-                                a(href="/sessions/#{session._id}")
-                                    div.session(id="#{session._id}")
-                                        span.name #{session._participant.local.email}
-                            //- td
-                            //-     div #{session.group}
-                            td
-                                p #{session.dateCreated}
+                        if session._participant
+                            tr
+                                td
+                                    a(href="/sessions/#{session._id}")
+                                        div.session(id="#{session._id}")
+                                            span.name #{session._participant.local.email}
+                                //- td
+                                //-     div #{session.group}
+                                td
+                                    p #{session.dateCreated}
 
 
 block modal
