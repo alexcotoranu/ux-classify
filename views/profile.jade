@@ -21,7 +21,7 @@ block content
                     div.experiment(class="col-sm-3 open")
                         div(class="text-center") #{permission.experiment.name}
             if permission.experiment.category == 'closed' && permission.experiment.closedSession
-                a(href="/projects/#{permission.experiment.project}/#{experiment._id}/new")
+                a(href="/projects/#{permission.experiment.project}/#{permission.experiment._id}/new")
                     div.experiment(class="col-sm-3 closed")
                         div(class="text-center") #{permission.experiment.name}
 
