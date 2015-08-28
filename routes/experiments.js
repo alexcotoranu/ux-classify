@@ -120,4 +120,42 @@ router.route('/:id')
         });
     });
 
+// route middleware to make sure a user is logged in
+function isLoggedIn(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
+
+// route middleware to make sure a user is logged in as an admin
+function isAdmin(req, res, next) {
+
+    // if user is authenticated in the session, and is an admin 
+    if (req.isAuthenticated() && req.user.isAdmin)
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
+}
+
 module.exports = router;

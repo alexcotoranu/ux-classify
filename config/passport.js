@@ -121,12 +121,9 @@ module.exports = function(passport) {
                             throw err;
                         return done(null, newUser);
                     });
-                  }
-
+                }
             });
-
         });
-
     }));
 
 
@@ -157,10 +154,6 @@ module.exports = function(passport) {
             // all is well, return successful user
             return done(null, user);
         });
-
     }));
-
-
-
 };
 

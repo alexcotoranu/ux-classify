@@ -21,7 +21,7 @@ html
             div.navbar-collapse(class="collapse")
                 div.navbar-right
                     if user
-                        span#user-email #{user.local.email}
+                        a#user-email(href="/change") #{user.local.email}
                         a#logout-button.btn(href="/logout" class="btn-sm")
                             span.glyphicon(class="glyphicon-log-out" aria-hidden="true")
                             |  Logout

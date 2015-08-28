@@ -500,7 +500,8 @@ router.route('/:id/:exid/invite')
                     mongoose.model('User').create({
                         // set the user's local credentials
                         'local.email' : email,
-                        'local.password' : hashedPassword
+                        'local.password' : hashedPassword,
+                        'changePassword' : true
                     }, function (err, newUser) {
                         if (err)
                             throw err;
@@ -615,7 +616,7 @@ function ensurePermissions (experiment, user) {
  }
 
 function hasPermission (req, res, next) {
-    mongoose.model('Permission').findOne( {'user': req.user, 'experiment': req.params.['exid'], 'sessions.c':true} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permission) {
+    mongoose.model('Permission').findOne( {'user': req.user, 'experiment': req.params['exid'], 'sessions.c':true} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permission) {
         if (err)
             console.log('Permission check failed');
         if (permission) {
@@ -634,12 +635,19 @@ function extractEmails (text) {
     var emailstring = text.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+\.[a-zA-Z0-9._-]+)/gi);
     return  emailstring;
 }
+
 // route middleware to make sure a user is logged in
 function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on 
     if (req.isAuthenticated())
-        return next();
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
 
     // if they aren't redirect them to the home page
     res.location('/');
@@ -650,9 +658,15 @@ function isLoggedIn(req, res, next) {
 // route middleware to make sure a user is logged in as an admin
 function isAdmin(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
+    // if user is authenticated in the session, and is an admin 
     if (req.isAuthenticated() && req.user.isAdmin)
-        return next();
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
 
     // if they aren't redirect them to the home page
     res.location('/');

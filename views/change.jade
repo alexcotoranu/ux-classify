@@ -6,10 +6,20 @@ block content
 
         h1
             span(class="fa fa-key")
-            |  Reset Password
-    
+            |  Change Password
+        
+        if messages.error
+            .alert.alert-danger
+                div= messages.error
+        if messages.info
+            .alert.alert-info
+                div= messages.info
+        if messages.success
+            .alert.alert-success
+                div= messages.success
+
         form(method='POST')
-            //- legend Reset Password
+            //- legend Change Password
             .form-group
                 label(for='password') New Password
                 input.form-control(type='password', name='password', value='', placeholder='New password', autofocus=true)

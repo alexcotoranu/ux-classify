@@ -174,7 +174,13 @@ function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on 
     if (req.isAuthenticated())
-        return next();
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
 
     // if they aren't redirect them to the home page
     res.location('/');
@@ -185,9 +191,15 @@ function isLoggedIn(req, res, next) {
 // route middleware to make sure a user is logged in as an admin
 function isAdmin(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
+    // if user is authenticated in the session, and is an admin 
     if (req.isAuthenticated() && req.user.isAdmin)
-        return next();
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
 
     // if they aren't redirect them to the home page
     res.location('/');

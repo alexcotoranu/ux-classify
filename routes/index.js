@@ -13,7 +13,8 @@ var async = require('async');
 var crypto = require('crypto');
 var flash = require('express-flash');
 
-
+var apiKey = 'YOUR_API_KEY';
+var fromEmail = 'YOUR_EMAIL';
 
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
@@ -28,7 +29,7 @@ router.use(methodOverride(function(req, res){
 
 //::::::::::::::::::::::GRADUATE USER
 router.route('/graduateuser')
-    .post(isLoggedIn, function(req, res, next) {
+    .post(isLoggedIn, function (req, res, next) {
         mongoose.model('User').findById(req.user, function (err, user) {
             if (user.isGrad == undefined || user.isGrad == false){
                 user.update({
@@ -58,7 +59,7 @@ router.route('/graduateuser')
 
 //::::::::::::::::::::::HOME PAGE (WITH LOGIN LINKS)
 router.route('/')
-    .get(isNotLoggedIn, function(req, res, next) {
+    .get(isNotLoggedIn, function (req, res, next) {
         var title = 'UX-Classify';
         res.format({
             html: function(){
@@ -75,7 +76,7 @@ router.route('/')
 //::::::::::::::::::::::LOGIN
 // show the login form
 router.route('/login')
-    .get(isNotLoggedIn, function(req, res, next) {
+    .get(isNotLoggedIn, function (req, res, next) {
         // render the page and pass in any flash data if it exists
         res.format({
             html: function(){
@@ -117,7 +118,7 @@ router.route('/forgot')
                 });
             },
             function (token, done) {
-                mongoose.model('User').findOne({ 'local.email': req.body.email }, function(err, user) {
+                mongoose.model('User').findOne({ 'local.email': req.body.email }, function (err, user) {
                     if (!user) {
                         req.flash('error', 'No account with that email address exists.');
                         return res.redirect('/forgot');
@@ -134,13 +135,13 @@ router.route('/forgot')
             function (token, user, done) {
                 var options = {
                     auth: {
-                        api_key: 'YOURAPIKEY'
+                        api_key: apiKey
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
                 var email = {
                     to: user.local.email,
-                    from: 'passwordreset@example.com',
+                    from: fromEmail,
                     subject: 'UX-Classify Password Reset',
                     text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
@@ -186,7 +187,14 @@ router.route('/reset/:token')
                     }
 
                     var hashedPassword = mongoose.model('User').schema.methods.generateHash(req.body.password);
-                    user.local.password = hashedPassword;
+                    
+                    if (req.body.password != req.body.confirm){
+                        req.flash('error', 'Passwords do not match!');
+                        return res.redirect('back');
+                    } else if (req.body.password === req.body.confirm) {
+                        user.local.password = hashedPassword;
+                    }     
+
                     user.resetPasswordToken = undefined;
                     user.resetPasswordExpires = undefined;
 
@@ -200,13 +208,13 @@ router.route('/reset/:token')
             function (user, done) {
                 var options = {
                     auth: {
-                        api_key: 'YOURAPIKEY'
+                        api_key: apiKey
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
                 var email = {
                     to: user.local.email,
-                    from: 'passwordreset@example.com',
+                    from: fromEmail,
                     subject: 'Your password has been changed',
                     text: 'Hello,\n\n' +
                     'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
@@ -222,6 +230,80 @@ router.route('/reset/:token')
             }
             ], function (err) {
                 res.redirect('/');
+            });
+        });
+
+//::::::::::::::::::::::CHANGE
+// show the reset password form
+router.route('/change')
+    .get(isLoggedIn, function (req, res, next) {
+        res.format({
+            html: function(){
+                res.render('change', {
+                    message: req.flash('changeMessage')
+                });
+            },
+            json: function(){
+                res.json(req.flash('changeMessage'));
+            }
+        });
+    })
+    .post(isLoggedIn, function (req, res, next) {
+        async.waterfall([
+            function (done) {
+                mongoose.model('User').findById(req.user._id, function (err, user) {
+                    if (err) {
+                        req.flash('error', 'User Not Found.');
+                        console.log(err);
+                        return res.redirect('back');
+                    }
+
+                    var hashedPassword = mongoose.model('User').schema.methods.generateHash(req.body.password);
+                    
+                    if (req.body.password != req.body.confirm){
+                        req.flash('error', 'Passwords do not match!');
+                        return res.redirect('back');
+                    } else if (req.body.password === req.body.confirm) {
+                        user.local.password = hashedPassword;
+                    }                    
+                    
+
+                    if(user.changePassword != null && user.changePassword != undefined && user.changePassword === true) {
+                        user.changePassword = false;
+                    }
+
+                    user.save(function(err) {
+                        req.logIn(user, function(err) {
+                            done(err, user);
+                        });
+                    });
+                });
+            },
+            function (user, done) {
+                var options = {
+                    auth: {
+                        api_key: apiKey
+                    }
+                };
+                var mailer = nodemailer.createTransport(sgTransport(options));
+                var email = {
+                    to: user.local.email,
+                    from: fromEmail,
+                    subject: 'Your password has been changed',
+                    text: 'Hello,\n\n' +
+                    'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+                };
+                // mailer.sendMail(email, function (err, res) {
+                //     if(err){
+                //         return console.log(err);
+                //     }
+                    console.log('Message sent: ' + res);
+                    req.flash('success', 'Success! Your password has been changed.');
+                    done(err);
+                // });
+            }
+            ], function (err) {
+                res.redirect('/profile');
             });
         });
 
@@ -304,7 +386,13 @@ function isLoggedIn(req, res, next) {
 
     // if user is authenticated in the session, carry on 
     if (req.isAuthenticated())
-        return next();
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
 
     // if they aren't redirect them to the home page
     res.location('/');
@@ -315,9 +403,15 @@ function isLoggedIn(req, res, next) {
 // route middleware to make sure a user is logged in as an admin
 function isAdmin(req, res, next) {
 
-    // if user is authenticated in the session, carry on 
+    // if user is authenticated in the session, and is an admin 
     if (req.isAuthenticated() && req.user.isAdmin)
-        return next();
+        if (req.user.changePassword) {
+            res.location('/change');
+            res.setHeader('Location','/change');
+            res.redirect('/change');
+        } else {
+            return next(); //carry on
+        }
 
     // if they aren't redirect them to the home page
     res.location('/');

@@ -9,6 +9,7 @@ mongoose.connect('mongodb://localhost/uxclassifydb');
 var userSchema = new mongoose.Schema({
     isAdmin: Boolean,
     isGrad: Boolean,
+    changePassword: Boolean,
     resetPasswordToken: String,
     resetPasswordExpires: Date,
     local: {
