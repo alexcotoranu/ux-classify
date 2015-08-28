@@ -614,19 +614,20 @@ function ensurePermissions (experiment, user) {
     });
  }
 
-// function hasPermission (req, res, next) {
-//     mongoose.model('Permission').findOne( {'user': req.user, 'experiment': req.params.['exid'], 'sessions.c':true} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permission) {
-//         if (err)
-//             console.log('Permission check failed')
-        
-//             if( permission)
-//             return next();
-//         }
-//         // if they aren't redirect them to the home page
-//     res.location('/');
-//     res.setHeader('Location','/');
-//     res.redirect('/');
-// }
+function hasPermission (req, res, next) {
+    mongoose.model('Permission').findOne( {'user': req.user, 'experiment': req.params.['exid'], 'sessions.c':true} ).sort({dateCreated: -1}).populate('experiment').exec(function (err, permission) {
+        if (err)
+            console.log('Permission check failed');
+        if (permission) {
+            return next();
+        } else {
+            // if they aren't redirect them to the home page
+            res.location('/');
+            res.setHeader('Location','/');
+            res.redirect('/');
+        }
+    }); 
+}
 
 //email extraction
 function extractEmails (text) {
