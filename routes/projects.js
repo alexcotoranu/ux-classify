@@ -13,6 +13,9 @@ var async = require('async');
 var crypto = require('crypto');
 var flash = require('express-flash');
 
+var apiKey = 'YOUR_API_KEY';
+var fromEmail = 'YOUR_EMAIL';
+
 //copy-pasted from method-override
 router.use(bodyParser.urlencoded({ extended: true }));
 router.use(methodOverride(function(req, res){
@@ -536,13 +539,13 @@ router.route('/:id/:exid/invite')
 function inviteUser (address, token) {
     var options = {
         auth: {
-            api_key: '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'
+            api_key: apiKey
         }
     };
     var mailer = nodemailer.createTransport(sgTransport(options));
     var email = {
         to: address,
-        from: 'invitations@ux-classify.net',
+        from: fromEmail,
         subject: 'Invitation: User Experience Session',
         text: 'Hello,\n\n' +
         'We invite you to participate in a quick user experience (UX) experiment session to help us improve our products.\n'
