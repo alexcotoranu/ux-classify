@@ -1,0 +1,25 @@
+html
+head
+    title
+
+body
+    div
+        table(border="0" cellpadding="10" cellspacing="1" style="width: 500px;")
+            tbody
+                tr
+                    td
+                        strong
+                            span(style="font-family: arial,helvetica,sans-serif;color:#696969;") User Experience (UX) Research
+                tr
+                    td
+                        div(style="font-family:arial,helvetica,sans-serif;")
+                            p Hello,
+                            p We invite you to participate in a quick user experience (UX) experiment session to help us improve our products.
+                            p You can log in with your email address: #{globals[0].address} using your temporary password: #{globals[0].token}
+                            p http://#{globals[0].req.headers.host}
+                            p Thank you kindly,
+                            p The research team.
+                tr
+                    td
+                        strong
+                            span(style="font-family: arial,helvetica,sans-serif;color:#696969;font-size: 10px;") Powered by UX-Classify

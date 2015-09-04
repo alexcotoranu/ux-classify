@@ -1,4 +1,5 @@
 var express = require('express');
+var jade = require('jade');
 var router = express.Router();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
@@ -139,14 +140,18 @@ router.route('/forgot')
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
+                var templatePath = 'views/emails/forgot.jade';
+                var jadeOptions = {globals:[{host:req.headers.host,token:token}]};
+                var html = jade.renderFile(templatePath, jadeOptions);
                 var email = {
                     to: user.local.email,
                     from: fromEmail,
-                    subject: 'UX-Classify Password Reset',
+                    subject: 'User Password reset request',
                     text: 'You are receiving this because you (or someone else) have requested the reset of the password for your account.\n\n' +
                     'Please click on the following link, or paste this into your browser to complete the process:\n\n' +
                     'http://' + req.headers.host + '/reset/' + token + '\n\n' +
-                    'If you did not request this, please ignore this email and your password will remain unchanged.\n'
+                    'If you did not request this, please ignore this email and your password will remain unchanged.\n',
+                    html: html
                 };
                 mailer.sendMail(email, function (err, res) {
                     if (err) {
@@ -212,12 +217,16 @@ router.route('/reset/:token')
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
+                var templatePath = 'views/emails/password.jade';
+                var jadeOptions = {globals:[{user:user}]};
+                var html = jade.renderFile(templatePath, jadeOptions);
                 var email = {
                     to: user.local.email,
                     from: fromEmail,
                     subject: 'Your password has been changed',
                     text: 'Hello,\n\n' +
-                    'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+                    'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n',
+                    html: html
                 };
                 mailer.sendMail(email, function (err, res) {
                     if(err){
@@ -236,7 +245,7 @@ router.route('/reset/:token')
 //::::::::::::::::::::::CHANGE
 // show the reset password form
 router.route('/change')
-    .get(isLoggedIn, function (req, res, next) {
+    .get(isLoggedInToChange, function (req, res, next) {
         res.format({
             html: function(){
                 res.render('change', {
@@ -248,7 +257,7 @@ router.route('/change')
             }
         });
     })
-    .post(isLoggedIn, function (req, res, next) {
+    .post(isLoggedInToChange, function (req, res, next) {
         async.waterfall([
             function (done) {
                 mongoose.model('User').findById(req.user._id, function (err, user) {
@@ -257,7 +266,6 @@ router.route('/change')
                         console.log(err);
                         return res.redirect('back');
                     }
-
                     var hashedPassword = mongoose.model('User').schema.methods.generateHash(req.body.password);
                     
                     if (req.body.password != req.body.confirm){
@@ -267,7 +275,6 @@ router.route('/change')
                         user.local.password = hashedPassword;
                     }                    
                     
-
                     if(user.changePassword != null && user.changePassword != undefined && user.changePassword === true) {
                         user.changePassword = false;
                     }
@@ -286,21 +293,26 @@ router.route('/change')
                     }
                 };
                 var mailer = nodemailer.createTransport(sgTransport(options));
+                var templatePath = 'views/emails/password.jade';
+                var jadeOptions = {globals:[{user:user}]};
+                var html = jade.renderFile(templatePath, jadeOptions);
                 var email = {
                     to: user.local.email,
                     from: fromEmail,
                     subject: 'Your password has been changed',
                     text: 'Hello,\n\n' +
-                    'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n'
+                    'This is a confirmation that the password for your account ' + user.local.email + ' has just been changed.\n',
+                    html: html
                 };
-                // mailer.sendMail(email, function (err, res) {
-                //     if(err){
-                //         return console.log(err);
-                //     }
+                mailer.sendMail(email, function (err, res) {
+                    if(err){
+                        return console.log(err);
+                    }
                     console.log('Message sent: ' + res);
                     req.flash('success', 'Success! Your password has been changed.');
                     done(err);
-                // });
+                });
+                req.flash('error', user.changePassword);
             }
             ], function (err) {
                 res.redirect('/profile');
@@ -379,6 +391,19 @@ function isNotLoggedIn(req, res, next) {
     res.location('/profile');
     res.setHeader('Location','profile');
     res.redirect('/profile');
+}
+
+// route middleware to make sure a user is logged in
+function isLoggedInToChange(req, res, next) {
+
+    // if user is authenticated in the session, carry on 
+    if (req.isAuthenticated())
+        return next();
+
+    // if they aren't redirect them to the home page
+    res.location('/');
+    res.setHeader('Location','/');
+    res.redirect('/');
 }
 
 // route middleware to make sure a user is logged in

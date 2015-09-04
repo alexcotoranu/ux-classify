@@ -1,4 +1,5 @@
 var express = require('express');
+var jade = require('jade');
 var router = express.Router();
 var mongoose = require('mongoose');
 var bodyParser = require('body-parser');
@@ -509,9 +510,9 @@ router.route('/:id/:exid/invite')
                         if (err)
                             throw err;
                         ensureAccess(project, experiment, newUser);
-                        inviteUser(newUser.local.email, token);
+                        inviteUser(req, newUser.local.email, token);
                     });
-                    callback('User invited!');
+                    callback('User "'+email+'" invited!');
                 }
             });
         }, function(err){
@@ -536,20 +537,26 @@ router.route('/:id/:exid/invite')
 
 // invite mails
 
-function inviteUser (address, token) {
+function inviteUser (req, address, token) {
     var options = {
         auth: {
             api_key: apiKey
         }
     };
     var mailer = nodemailer.createTransport(sgTransport(options));
+    var templatePath = 'views/emails/invite.jade';
+    var jadeOptions = {globals:[{address:address,token:token,req:req}]};
+    var html = jade.renderFile(templatePath, jadeOptions);
     var email = {
         to: address,
         from: fromEmail,
         subject: 'Invitation: User Experience Session',
         text: 'Hello,\n\n' +
         'We invite you to participate in a quick user experience (UX) experiment session to help us improve our products.\n'
-        + 'You can log in with your email address: ' + address + ' using your temporary password: ' + token + '. \n Thank you kindly.'
+        + 'You can log in with your email address: ' + address + ' using your temporary password: ' + token + '. \n'
+        + 'http://' + req.headers.host + '. \n'
+        + 'Thank you kindly.',
+        html: html
     };
     mailer.sendMail(email, function (err, res) {
         if(err){
