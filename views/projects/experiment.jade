@@ -102,7 +102,9 @@ block modal
                         h4.modal-title Invite Participants
                     div.modal-body
                         p Invitees:
-                            input#inputEmails.form-control(type="text", placeholder="ex. name@example.com;", name="emails")
+                            input#inputEmails.form-control(type="text" placeholder="ex. name@example.com;" name="emails")
+                            input#inputProject(type="hidden" value="#{project._id}")
+                            input#inputExperiment(type="hidden" value="#{experiment._id}")
                     div.modal-footer
                         button#submit-invites.btn(type="button" class="btn-success") submit
                         button.btn(type="button" class="btn-warning" data-dismiss="modal") cancel

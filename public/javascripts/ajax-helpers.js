@@ -1,12 +1,12 @@
 // invite users
-function inviteUsers(emails) {
+function inviteUsers(projectId, experimentId, emails) {
     // console.log("EMAILS: " + emails);
     var data = {
         emails: emails
     }
 
     var post = $.ajax({
-        url: window.location.pathname+'/invite',
+        url: '/projects/'+projectId+'/'+experimentId+'/invite',
         type: 'POST',
         data: data,
         success:function(data, textStatus, jqXHR) 

@@ -19,8 +19,10 @@ $(document).ready(function() {
     //::::::::: EXPERIMENT MANAGEMENT
     $(document).on('click', '#submit-invites', function(){
         console.log("Submitting invitations...")
+        var project = $('#inputProject').val();
+        var experiment = $('#inputExperiment').val();
         var emails = $('#inputEmails').val();
-        inviteUsers(emails);
+        inviteUsers(project,experiment,emails);
     });
 
     // "create new" button logic
